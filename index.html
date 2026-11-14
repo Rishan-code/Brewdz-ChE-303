@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrewDz Particle Engineering | Fluid Particle Systems Process Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for responsive interactive plotting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">☕⚙️</span>
+                <div class="logo-text">
+                    <span class="brand">BrewDz</span>
+                    <span class="sub">Particle Engineering</span>
+                </div>
+            </div>
+            <nav class="nav-links">
+                <a href="#about">Company & Problem</a>
+                <a href="#process">Process Design</a>
+                <a href="#calculator">Process Calculator</a>
+                <a href="#plots">Aspen Simulation Data</a>
+                <a href="#competitors">Market Survey</a>
+            </nav>
+            <div class="course-badge">
+                <span>ChE 303 Course Project</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="about">
+        <div class="hero-content">
+            <div class="badge-tag">Fluid Particle Systems & Comminution Mechanics</div>
+            <h1>Engineering the Perfect Coffee Powder</h1>
+            <p class="hero-desc">
+                Transforming specialty coffee processing through closed-loop comminution and precision particle size classification. 
+                Eliminating fines and boulders to unlock peak hydraulic permeability and uniform extraction.
+            </p>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <span class="stat-num">&gt;96%</span>
+                    <span class="stat-label">On-Spec Target Yield</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">-65%</span>
+                    <span class="stat-label">Extraction Fines (&lt;100 µm)</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">0.82</span>
+                    <span class="stat-label">Ultra-Narrow PSD Span</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num">&lt;28°C</span>
+                    <span class="stat-label">Chilled Roll Comminution</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company & Problem Engineering Narrative -->
+    <section class="container section">
+        <div class="section-header">
+            <h2>The Engineering Problem & Our Startup Solution</h2>
+            <p>Why particle mechanics dictates flavor physics, extraction kinetics, and process economics.</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card problem-card">
+                <div class="card-title">
+                    <span class="icon">⚠️</span>
+                    <h3>The Problem in Conventional Grinding</h3>
+                </div>
+                <p>Commercial disc and burr grinders rely on single-pass open-loop comminution, generating a broad bimodal particle distribution:</p>
+                <ul class="styled-list">
+                    <li><strong>Boulders (&gt; 1000 µm):</strong> Low surface area per unit volume; water channels past them, resulting in under-extraction and sour, weak brew.</li>
+                    <li><strong>Fines (&lt; 100 µm):</strong> Frictional dust particles migrate during percolation, blinding filter pores and creating erratic pressure surges (Ergun equation resistance). They over-extract rapidly, leaching astringent tannins.</li>
+                    <li><strong>Aroma Loss:</strong> Grinding temperatures exceed 55°C, stripping volatile aromatics.</li>
+                    <li><strong>Material Loss:</strong> 15%–22% of product is discarded or rejected as out-of-spec.</li>
+                </ul>
+            </div>
+
+            <div class="card solution-card">
+                <div class="card-title">
+                    <span class="icon">✨</span>
+                    <h3>The BrewDz Closed-Loop Innovation</h3>
+                </div>
+                <p>BrewDz implements a closed-circuit fluid-particle system engineered for high-precision coffee powder manufacture:</p>
+                <ul class="styled-list">
+                    <li><strong>Low-Shear Chilled Roller Milling:</strong> Dual-roll differential shear with water-cooled jackets keeps temperature &lt; 28°C.</li>
+                    <li><strong>Multi-Deck Vibratory Classification:</strong> High-frequency vibratory screen cuts oversize boulders and separates dust.</li>
+                    <li><strong>Automated Oversize Recycle:</strong> 100% of out-of-spec oversize is routed back into the mill feed, pushing total product yield to 96%+.</li>
+                    <li><strong>Aerodynamic Fines Recovery:</strong> Super-fines are harvested via cyclone air classification as high-solids instant coffee feed.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Process Flow Diagram (PFD) -->
+    <section class="container section" id="process">
+        <div class="section-header">
+            <h2>Aspen Plus Solids Process Flowsheet</h2>
+            <p>Two connected unit operations with steady-state material recycle and classification.</p>
+        </div>
+
+        <div class="pfd-wrapper card">
+            <div class="pfd-controls">
+                <span class="pfd-tip">💡 Click or hover over streams to inspect mass balances & physical properties</span>
+            </div>
+            
+            <svg class="pfd-svg" viewBox="0 0 950 420" xmlns="http://www.w3.org/2000/svg">
+                <!-- Definitions -->
+                <defs>
+                    <linearGradient id="gradBean" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4A2810"/>
+                        <stop offset="100%" stop-color="#2D170A"/>
+                    </linearGradient>
+                    <linearGradient id="gradEquip" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#1E293B"/>
+                        <stop offset="100%" stop-color="#0F172A"/>
+                    </linearGradient>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#D4A373" />
+                    </marker>
+                    <marker id="arrow-recycle" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#E67E22" />
+                    </marker>
+                </defs>
+
+                <!-- Grid & Background accents -->
+                <rect width="100%" height="100%" fill="#0B1120" rx="12"/>
+
+                <!-- Fresh Feed Pipe -->
+                <path d="M 40 180 L 170 180" stroke="#D4A373" stroke-width="4" marker-end="url(#arrow)"/>
+                <text x="50" y="165" fill="#D4A373" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600">STREAM: BEANS</text>
+                <text x="50" y="202" fill="#94A3B8" font-size="11">Whole Roasted (dp ~ 6.5 mm)</text>
+
+                <!-- Unit 1: MIXER -->
+                <rect x="170" y="140" width="80" height="80" rx="8" fill="url(#gradEquip)" stroke="#38BDF8" stroke-width="2"/>
+                <text x="210" y="175" fill="#F8FAFC" font-weight="700" font-size="13" text-anchor="middle">MIXER</text>
+                <text x="210" y="195" fill="#38BDF8" font-size="10" text-anchor="middle">Feed + Recycle</text>
+
+                <!-- Pipe Mixer -> Crusher -->
+                <path d="M 250 180 L 350 180" stroke="#D4A373" stroke-width="4" marker-end="url(#arrow)"/>
+                <text x="260" y="165" fill="#D4A373" font-family="'JetBrains Mono', monospace" font-size="11">TOTAL FEED</text>
+
+                <!-- Unit 2: ROLLER MILL (CRUSH) -->
+                <rect x="350" y="125" width="130" height="110" rx="10" fill="url(#gradEquip)" stroke="#F59E0B" stroke-width="2"/>
+                <circle cx="395" cy="175" r="24" fill="#334155" stroke="#F59E0B" stroke-width="2"/>
+                <circle cx="435" cy="175" r="24" fill="#334155" stroke="#F59E0B" stroke-width="2"/>
+                <text x="415" y="148" fill="#F8FAFC" font-weight="700" font-size="13" text-anchor="middle">ROLLER MILL</text>
+                <text x="415" y="222" fill="#FBBF24" font-size="10" text-anchor="middle">Aspen CRUSH Block</text>
+
+                <!-- Pipe Mill -> Screen -->
+                <path d="M 480 180 L 590 180" stroke="#D4A373" stroke-width="4" marker-end="url(#arrow)"/>
+                <text x="500" y="165" fill="#D4A373" font-family="'JetBrains Mono', monospace" font-size="11">GROUND</text>
+
+                <!-- Unit 3: VIBRATING SCREEN -->
+                <polygon points="590,130 730,150 730,220 590,200" fill="url(#gradEquip)" stroke="#10B981" stroke-width="2"/>
+                <line x1="600" y1="165" x2="720" y2="185" stroke="#10B981" stroke-width="2" stroke-dasharray="4"/>
+                <text x="660" y="145" fill="#F8FAFC" font-weight="700" font-size="13" text-anchor="middle">SCREEN</text>
+                <text x="660" y="212" fill="#34D399" font-size="10" text-anchor="middle">Aspen SCREEN Block</text>
+
+                <!-- Oversize Stream (Top of Screen) -->
+                <path d="M 680 145 L 680 80 L 210 80 L 210 140" fill="none" stroke="#E67E22" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrow-recycle)"/>
+                <rect x="360" y="65" width="180" height="28" rx="6" fill="#1E293B" stroke="#E67E22" stroke-width="1.5"/>
+                <text x="450" y="84" fill="#FDBA74" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" text-anchor="middle">RECYCLE: OVERSIZE (&gt; d_cut)</text>
+
+                <!-- Undersize / Product Stream -->
+                <path d="M 660 215 L 660 310 L 780 310" fill="none" stroke="#10B981" stroke-width="4" marker-end="url(#arrow)"/>
+                <text x="675" y="295" fill="#34D399" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600">STREAM: PRODUCT</text>
+                <text x="675" y="332" fill="#94A3B8" font-size="11">Calibrated Coffee Powder (&gt;96% Yield)</text>
+
+                <!-- Product Silo / Container -->
+                <rect x="780" y="270" width="110" height="75" rx="6" fill="url(#gradBean)" stroke="#D4A373" stroke-width="2"/>
+                <text x="835" y="305" fill="#F8FAFC" font-weight="700" font-size="13" text-anchor="middle">PACKAGING</text>
+                <text x="835" y="325" fill="#E2E8F0" font-size="10" text-anchor="middle">Certified Mesh PSD</text>
+            </svg>
+
+            <!-- Dynamic Stream Inspection Box -->
+            <div class="stream-inspector">
+                <div class="inspector-item">
+                    <span class="label">Fresh Feed Rate:</span>
+                    <span class="val" id="disp-feed-rate">250.0 kg/h</span>
+                </div>
+                <div class="inspector-item">
+                    <span class="label">Recycle Flow (Oversize):</span>
+                    <span class="val" id="disp-recycle-rate">91.9 kg/h</span>
+                </div>
+                <div class="inspector-item">
+                    <span class="label">Total Mill Throughput:</span>
+                    <span class="val" id="disp-total-mill">341.9 kg/h</span>
+                </div>
+                <div class="inspector-item">
+                    <span class="label">On-Spec Product Rate:</span>
+                    <span class="val" id="disp-product-rate">247.0 kg/h</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Process Calculator & Simulation Retrieval -->
+    <section class="container section" id="calculator">
+        <div class="section-header">
+            <h2>Interactive Process & Comminution Calculator</h2>
+            <p>Dynamically retrieves precomputed Aspen simulation points and solves Bond's Law & the Ergun Equation in real-time.</p>
+        </div>
+
+        <div class="calc-grid">
+            <!-- Controls Panel -->
+            <div class="calc-card inputs-card">
+                <h3>Operating Conditions</h3>
+                <div class="input-group">
+                    <div class="slider-header">
+                        <label for="input-feed-rate">Fresh Bean Feed Rate (kg/h):</label>
+                        <span class="slider-val" id="val-feed-rate">250 kg/h</span>
+                    </div>
+                    <input type="range" id="input-feed-rate" min="50" max="500" step="25" value="250">
+                    <div class="range-bounds">
+                        <span>50 kg/h (Pilot)</span>
+                        <span>500 kg/h (Commercial)</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="select-grind-profile">Target Brewing Grind Profile:</label>
+                    <select id="select-grind-profile" class="styled-select">
+                        <option value="Espresso">Espresso (Target d50 = 250 µm | Roller Gap = 0.25 mm)</option>
+                        <option value="Drip_PourOver" selected>Drip / Pour-Over (Target d50 = 550 µm | Roller Gap = 0.55 mm)</option>
+                        <option value="FrenchPress_ColdBrew">French Press / Cold Brew (Target d50 = 950 µm | Roller Gap = 0.95 mm)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <div class="slider-header">
+                        <label for="input-screen-mesh">Screen Aperture Cut-Size (µm):</label>
+                        <span class="slider-val" id="val-screen-mesh">700 µm</span>
+                    </div>
+                    <input type="range" id="input-screen-mesh" min="300" max="1300" step="50" value="700">
+                    <div class="range-bounds">
+                        <span>300 µm (Fine Mesh)</span>
+                        <span>1300 µm (Coarse Mesh)</span>
+                    </div>
+                </div>
+
+                <div class="calc-note">
+                    <strong>Model Mechanics:</strong> Inputs trigger real-time interpolation of the 57 Aspen simulation cases from <code>simulation_dataset.csv</code> and evaluate equipment performance.
+                </div>
+            </div>
+
+            <!-- Calculated Outputs Panel -->
+            <div class="calc-card outputs-card">
+                <h3>Aspen Simulation & Equipment Results</h3>
+                
+                <div class="results-grid">
+                    <div class="result-box highlight">
+                        <span class="res-label">Mill Comminution Power (Bond's Law)</span>
+                        <div class="res-num" id="out-power">1.17 kW</div>
+                        <span class="res-sub" id="out-spec-energy">0.0034 kWh/kg</span>
+                    </div>
+
+                    <div class="result-box">
+                        <span class="res-label">Steady-State Recycle Rate</span>
+                        <div class="res-num" id="out-recycle">52.8 kg/h</div>
+                        <span class="res-sub" id="out-recycle-ratio">Recycle Ratio (R): 0.211</span>
+                    </div>
+
+                    <div class="result-box">
+                        <span class="res-label">On-Spec Product Recovery</span>
+                        <div class="res-num" id="out-yield">98.8%</div>
+                        <span class="res-sub" id="out-loss">Mass Loss: &lt; 1.2%</span>
+                    </div>
+
+                    <div class="result-box">
+                        <span class="res-label">Fines Fraction (&lt; 100 µm)</span>
+                        <div class="res-num" id="out-fines">3.2%</div>
+                        <span class="res-sub">Reduced by 65% vs Standard</span>
+                    </div>
+
+                    <div class="result-box full-width">
+                        <span class="res-label">Coffee Bed Extraction Hydraulic Pressure Drop (Ergun Equation)</span>
+                        <div class="res-num" id="out-ergun">0.03 kPa</div>
+                        <span class="res-sub">Controlled permeability prevents channeling and filter media clogging</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Data Visualizations -->
+    <section class="container section" id="plots">
+        <div class="section-header">
+            <h2>Process Performance & Particle Distributions</h2>
+            <p>Visualizing Aspen parametric sweep curves and particle size distribution (PSD) improvements.</p>
+        </div>
+
+        <div class="grid-2">
+            <!-- Chart 1: Power vs Feed Rate -->
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Power Consumption vs. Feed Rate</h3>
+                    <span class="chart-tag">Aspen + Bond's Law</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartPowerFeed"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Particle Size Distribution Comparison -->
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Particle Size Distribution (PSD) Comparison</h3>
+                    <span class="chart-tag">Fluid Mechanics Target</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartPSD"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competitor Survey & Differentiation Table -->
+    <section class="container section" id="competitors">
+        <div class="section-header">
+            <h2>Competitor Analysis & Market Positioning</h2>
+            <p>Benchmarking regional players in Indore, MP, and across India against BrewDz's fluid-particle technology.</p>
+        </div>
+
+        <div class="card table-card">
+            <div class="table-responsive">
+                <table class="benchmark-table">
+                    <thead>
+                        <tr>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Category</th>
+                            <th>Current Technology</th>
+                            <th>Process Limitations</th>
+                            <th>BrewDz Competitive Edge</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Kaapi Machines</strong></td>
+                            <td>Pan-India</td>
+                            <td><span class="pill pill-direct">Direct (Equipment)</span></td>
+                            <td>Mahlkönig & Ditting industrial burr mills</td>
+                            <td>High CapEx; open-loop batch operation; no integrated continuous screening or recycle</td>
+                            <td>Closed-loop modular system with automated recycle achieving &gt;96% yield at 40% lower CapEx</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Chapter One Coffee</strong></td>
+                            <td>Indore, MP</td>
+                            <td><span class="pill pill-roaster">Local Roastery</span></td>
+                            <td>Standalone retail burr grinders</td>
+                            <td>Batch grinding; manual fines disposal; batch-to-batch PSD variance</td>
+                            <td>Supplying calibrated, narrow-span B2B pre-ground coffee with guaranteed extraction consistency</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Raj Electricals</strong></td>
+                            <td>Indore / Gujarat</td>
+                            <td><span class="pill pill-alt">Alternative</span></td>
+                            <td>Heavy-duty disc and hammer mills for food grains</td>
+                            <td>Destructive impact comminution; thermal heating &gt;55°C destroying coffee aroma oils; fines &gt;30%</td>
+                            <td>Low-shear chilled roller milling with active thermal control (&lt;28°C) preserving volatile aromatics</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Blue Tokai Roasters</strong></td>
+                            <td>Pan-India</td>
+                            <td><span class="pill pill-direct">Direct (Packaged)</span></td>
+                            <td>Commercial burr grinders</td>
+                            <td>Grinding treated as secondary retail packaging; out-of-spec fractions wasted</td>
+                            <td>Specialized B2B particle engineering equipment and toll-milling services</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hosokawa Micron India</strong></td>
+                            <td>Chennai</td>
+                            <td><span class="pill pill-alt">High-End Industrial</span></td>
+                            <td>Air classifier mills (ACM) for bulk chemicals/minerals</td>
+                            <td>Large ton/hr scale; prohibitively expensive for SME coffee startups (&gt; ₹50 Lakhs)</td>
+                            <td>Right-sized modular units (50–500 kg/h) designed specifically for food-grade coffee manufacturing</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <p><strong>BrewDz Particle Engineering Pvt. Ltd.</strong></p>
+                <p>Course Project for ChE 303: Fluid Particle Systems | Chemical Engineering</p>
+            </div>
+            <div class="footer-right">
+                <p>Built with Aspen Plus Solids Simulation Dataset & Python Equipment Calculation Verification</p>
+                <p>© 2026 BrewDz Team. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
+
