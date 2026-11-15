@@ -27,14 +27,15 @@
 ### Slide 2: Competitor Benchmarking Survey (Indore & India)
 * **Slide Title:** Competitor Landscape & Market Differentiation
 * **Market Comparison Matrix:**
-  * **Kaapi Machines (Pan-India):** Distributors of imported Mahlkönig/Ditting commercial grinders. *Limitation:* High CapEx (₹3L–₹15L); open-loop batch processing without oversize recycle.
-  * **Chapter One Coffee Roasters (Indore, MP):** Local specialty café and roastery. *Limitation:* Relies on manual batch retail grinders; subject to batch-to-batch PSD drift; manual disposal of fines.
-  * **Raj Electricals / Gujarat Millers (Indore Industrial Belt):** Heavy disc/hammer pulverizers. *Limitation:* Severe impact shear causing frictional heating (>55°C) that volatilizes aromatic oils; excessive fines (>30%).
-  * **Hosokawa Micron India (Chennai):** Enterprise Air Classifier Mills (ACM). *Limitation:* Geared for ton/hr bulk mineral/chemical plants; prohibitively expensive for food startups (>₹50L).
+  * **Kaapi Machines (Pan-India):** Official distributor of Mahlkönig (EK43, EK Omnia) and Ditting. *Limitation:* High CapEx (₹3.5L–₹15L); open-loop batch processing without oversize continuous recycle.
+  * **Siolim Specialty Coffee Roasters (Indore, MP):** Pioneer specialty roastery in Indore (Sapna Sangeeta). *Limitation:* Relies on manual batch retail grinding; 15–18% fines cause cold brew filter blinding and extraction astringency; manual fines sifting causes product waste.
+  * **J P Machine Tools (Sanwer Road Industrial Area, Indore, MP):** Local fabricator of hammer mills & micro-pulverizers. *Limitation:* Violent impact comminution causing frictional heating (>55°C) that volatilizes aromatic oils; excessive fines (>30%).
+  * **Galaxy Sivtek (Vadodara / Pan-India):** Industrial vibrating screen & vibro-separator manufacturer. *Limitation:* Supplies only standalone screens; lacks an integrated comminution mill and automated recycle loop.
 * **BrewDz Differentiation:**
   * Modular, food-grade closed-loop milling sized for SME roasters (50–500 kg/h).
   * Integrated screen with automated recycle: pushes yield to $98.8\%$.
-  * Chilled-roll temperature control (<28°C) preventing aroma loss.
+  * Chilled-roll temperature control (<28°C) preserving volatile aromatics.
+  * Ultra-narrow PSD span ($\text{Span} \le 0.85$), eliminating filter blinding and channel-driven extraction failure.
 
 ---
 

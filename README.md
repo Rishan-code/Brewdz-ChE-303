@@ -22,6 +22,7 @@ BrewDz implements a closed-loop comminution and classification circuit with **lo
 ```text
 ├── ChE 303_Project.pdf               # Official course project guidelines
 ├── PROJECT_MASTER_GUIDELINES.md      # Detailed master execution manual & technical guide
+├── COMPETITOR_STUDY_DETAILED.md      # In-depth market & competitor survey (Indore/MP & India)
 ├── PRESENTATION_SLIDES_DRAFT.md      # 8-slide final evaluation presentation & viva Q&A
 ├── coffee_particle_calc.py           # Python calculations (Bond's Law, Screen Eff., Ergun Eq.) + Hand Verification
 ├── generate_simulation_dataset.py    # Aspen Plus parametric simulation data generator
