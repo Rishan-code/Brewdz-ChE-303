@@ -27,6 +27,10 @@ Brewdz-ChE-303/
 ├── README.md                         # Complete project documentation & setup
 ├── index.html                        # GitHub Pages root redirect to frontend/
 │
+├── Aspen/                            # Aspen Plus V14 Raw Simulation Results (Charan's Runs)
+│   ├── run_1.xlsx ... run_6.xlsx     # Open-loop single-pass grinding cases
+│   └── mix_1.xlsx ... mix_6.xlsx     # Closed-loop converged cases with oversize recycle
+│
 ├── frontend/                         # Interactive Web Application & Simulation Dashboard
 │   ├── index.html                    # Main web portal (Fraunces typography & warm paper theme)
 │   ├── app.js                        # Bilinear interpolation engine, Angle of Nip & Chart.js
@@ -36,12 +40,15 @@ Brewdz-ChE-303/
 │
 ├── simulation/                       # Python Computational Modeling & Aspen Solids Circuits
 │   ├── coffee_particle_calc.py       # Double Roll Crusher calculations, Angle of Nip & Bond hand-check
-│   └── generate_simulation_dataset.py# Aspen-equivalent steady-state parametric dataset generator
+│   ├── generate_simulation_dataset.py# Aspen-equivalent steady-state parametric dataset generator
+│   └── parse_aspen_runs.py           # Automated parser for Aspen Excel stream results
 │
 ├── data/                             # Raw & Parametric Simulation Data
 │   └── simulation_dataset.csv        # 399-case comprehensive simulation dataset
 │
 └── docs/                             # Deliverables, Course Guidelines & Defense Materials
+    ├── ASPEN_SIMULATION_REPORT.md    # In-depth analysis of Aspen Plus V14 flowsheet & runs
+    ├── aspen_screenshots/            # Aspen Plus V14 GUI screenshots (flowsheet, feed, PSD)
     ├── ChE 303_Project.pdf           # Official course project guidelines
     ├── COMPETITOR_STUDY_DETAILED.md  # Detailed 5-competitor Indore & pan-India benchmark
     ├── PRESENTATION_SLIDES_DRAFT.md  # 8-slide final presentation deck & viva defense Q&A
