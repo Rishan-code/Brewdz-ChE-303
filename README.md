@@ -19,56 +19,72 @@ BrewDz implements a closed-loop comminution and classification circuit with **lo
 
 ## 📁 Repository Structure
 
+The project is organized into modular folders for documentation, python modeling, simulation datasets, and the web platform:
+
 ```text
-├── ChE 303_Project.pdf               # Official course project guidelines
-├── PROJECT_MASTER_GUIDELINES.md      # Detailed master execution manual & technical guide
-├── COMPETITOR_STUDY_DETAILED.md      # In-depth market & competitor survey (Indore/MP & India)
-├── PRESENTATION_SLIDES_DRAFT.md      # 8-slide final evaluation presentation & viva Q&A
-├── coffee_particle_calc.py           # Python calculations (Bond's Law, Screen Eff., Ergun Eq.) + Hand Verification
-├── generate_simulation_dataset.py    # Aspen Plus parametric simulation data generator
-├── simulation_dataset.csv            # 57 precomputed simulation cases
-├── index.html                        # Standalone interactive web portal & simulation viewer
-├── style.css                         # Web app styling (specialty coffee + engineering theme)
-├── app.js                            # Interactive calculator, CSV interpolation & Chart.js engine
-├── .gitignore                        # Git ignore rules
-└── README.md                         # Project documentation
+Brewdz-ChE-303/
+├── .gitignore
+├── README.md                         # Complete project documentation & setup
+├── index.html                        # GitHub Pages root redirect to frontend/
+│
+├── frontend/                         # Interactive Web Application & Simulation Dashboard
+│   ├── index.html                    # Main web portal (Fraunces typography & warm paper theme)
+│   ├── app.js                        # Bilinear interpolation engine, Angle of Nip & Chart.js
+│   ├── style.css                     # Responsive CSS layout & styling
+│   ├── simulation_data.js            # Precomputed 399-case simulation database
+│   └── simulation_dataset.csv        # Downloadable parametric CSV dataset
+│
+├── simulation/                       # Python Computational Modeling & Aspen Solids Circuits
+│   ├── coffee_particle_calc.py       # Double Roll Crusher calculations, Angle of Nip & Bond hand-check
+│   └── generate_simulation_dataset.py# Aspen-equivalent steady-state parametric dataset generator
+│
+├── data/                             # Raw & Parametric Simulation Data
+│   └── simulation_dataset.csv        # 399-case comprehensive simulation dataset
+│
+└── docs/                             # Deliverables, Course Guidelines & Defense Materials
+    ├── ChE 303_Project.pdf           # Official course project guidelines
+    ├── COMPETITOR_STUDY_DETAILED.md  # Detailed 5-competitor Indore & pan-India benchmark
+    ├── PRESENTATION_SLIDES_DRAFT.md  # 8-slide final presentation deck & viva defense Q&A
+    └── PROJECT_MASTER_GUIDELINES.md  # Master engineering execution manual
 ```
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Deliverables & Execution
 
-### 1. Equipment Calculations & Hand Verification (`coffee_particle_calc.py`)
-- **Bond's Comminution Law:** Calculates roller mill power across varying feed rates and product sizes ($d_{80}$).
+### 1. Equipment Calculations & Hand Verification (`simulation/coffee_particle_calc.py`)
+- **Double Roll Crusher Angle of Nip ($\alpha$):** Evaluates $\cos(\alpha/2) = \frac{D_R + s}{D_R + D_p}$ and verifies zero-slip gripping ($\tan(\alpha/2) \le \mu = 0.32$).
+- **Crusher Mass Capacity:** Computes theoretical and practical capacity ($Q_{\text{practical}} = 60\pi D_R W_R N s \rho_{\text{bulk}}\eta_v$).
+- **Bond's Comminution Law:** Calculates comminution power across feed rates and product sizes ($d_{80}$).
 - **Screen Separation Effectiveness ($E$):** Evaluates oversize ($E_O$) and undersize ($E_U$) recoveries.
-- **Ergun Equation:** Models pressure drop across the packed bed during fluid percolation.
-- **Analytical Benchmark:** Validates Python outputs against step-by-step hand calculations ($100\%$ match).
+- **Ergun Equation:** Evaluates packed-bed hydraulic resistance during coffee extraction.
+- **Analytical Benchmark:** Matches hand calculations at $0.0000000000$ error.
 
 Run verification:
 ```bash
-python coffee_particle_calc.py
+python simulation/coffee_particle_calc.py
 ```
 
-### 2. Parametric Simulation Dataset (`simulation_dataset.csv`)
-- 57 simulation cases across feed rates ($50\text{--}500\,\text{kg/h}$) and three brewing modes:
+### 2. Parametric Simulation Dataset (`data/simulation_dataset.csv`)
+- Parametric dataset across feed rates ($50\text{--}500\,\text{kg/h}$), screen apertures ($550\text{--}850\,\mu\text{m}$), and three brewing profiles:
   - **Espresso:** $d_{50} = 250\,\mu\text{m}$, roller gap $= 0.25\,\text{mm}$
   - **Drip / Pour-Over:** $d_{50} = 550\,\mu\text{m}$, roller gap $= 0.55\,\text{mm}$
   - **French Press / Cold Brew:** $d_{50} = 950\,\mu\text{m}$, roller gap $= 0.95\,\text{mm}$
 
 Regenerate dataset:
 ```bash
-python generate_simulation_dataset.py
+python simulation/generate_simulation_dataset.py
 ```
 
-### 3. Interactive Web Application (`index.html`)
-- **Zero Aspen Live Dependency:** Runs standalone in any browser.
+### 3. Interactive Web Application (`frontend/index.html`)
+- **Live Deployment:** [https://rishan-code.github.io/Brewdz-ChE-303/](https://rishan-code.github.io/Brewdz-ChE-303/)
+- **Zero Aspen Live Dependency:** Runs standalone in modern web browsers.
 - **Interactive PFD:** Animated SVG flowsheet with dynamic stream telemetry.
-- **Live Engineering Calculator:** Sliders for feed rate, grind preset, and screen mesh with real-time dataset interpolation.
-- **Dynamic Charts (Chart.js):** Power vs. feed rate curves and PSD distribution comparison.
-- **Competitor Benchmark:** Detailed landscape analysis covering Indore and Pan-India competitors.
+- **Live Engineering Calculator:** Sliders for feed rate (mass flow), feed bean size ($d_{50}$), feed span, and screen mesh aperture with real-time bilinear dataset interpolation.
+- **Double Roll Crusher Readouts:** Live Angle of Nip status badge (`✓ PASS (≤ 35.5°)`), practical capacity, and full product PSD percentiles ($d_{10}, d_{50}, d_{80}, d_{90}$, span).
+- **Competitor Benchmark:** Detailed landscape analysis covering Indore/MP and Pan-India competitors.
 
-Open in browser:
-Simply double-click `index.html` or run:
+Open in browser locally:
 ```bash
 python -m http.server 8000
 ```
@@ -77,11 +93,13 @@ Then navigate to `http://localhost:8000`.
 ---
 
 ## 📊 8-Slide Evaluation Presentation Guide
-See [PRESENTATION_SLIDES_DRAFT.md](PRESENTATION_SLIDES_DRAFT.md) for complete slide-by-slide bullet points, talking points, and anticipated faculty viva defense Q&A.
+See [docs/PRESENTATION_SLIDES_DRAFT.md](docs/PRESENTATION_SLIDES_DRAFT.md) for complete slide-by-slide bullet points, talking points, and anticipated faculty viva defense Q&A.
 
 ---
 
 ## 👥 Authors
-* **Course:** ChE 303 — Fluid Particle Systems
-* **Team:** BrewDz Engineering Group
+* **Charan:** Process Simulation Lead (*Aspen Plus Flowsheet, Solids Circuit Design, Recycle Convergence*)
+* **Rishan:** Computational Modelling Lead (*Double Roll Crusher Mechanics, Angle of Nip, Bond Verification*)
+* **Sohil Thakur:** Web & Data Lead (*Interactive Engineering Portal, Simulation Dataset Interpolation, SVG Flowsheet*)
+* **ChE 303 Team:** Systems & Market Analysis (*Indore Competitor Benchmarking, Ergun Bed Hydraulics, Technical Defense*)
 

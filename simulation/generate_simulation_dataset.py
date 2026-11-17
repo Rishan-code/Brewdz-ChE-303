@@ -126,16 +126,23 @@ def generate_dataset():
             })
             case_id += 1
 
-    # Write to CSV
+    # Write to CSV in data/ and frontend/
+    import os
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_dir = os.path.dirname(script_dir)
+    target_paths = [
+        os.path.join(repo_dir, "data", "simulation_dataset.csv"),
+        os.path.join(repo_dir, "frontend", "simulation_dataset.csv")
+    ]
+
     fieldnames = list(cases[0].keys())
-    output_filename = "simulation_dataset.csv"
-
-    with open(output_filename, mode="w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(cases)
-
-    print(f"Successfully generated {len(cases)} simulation cases in '{output_filename}'.")
+    for target in target_paths:
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        with open(target, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(cases)
+        print(f"Generated {len(cases)} cases in '{target}'.")
 
 
 if __name__ == "__main__":
