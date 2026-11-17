@@ -138,16 +138,21 @@
     function streamInfo(key, r, prof) {
         const F = r.feed_rate_kgh, M = r.mill_total_feed_kgh, R = r.recycle_rate_kgh;
         const P = r.product_rate_kgh, X = r.fines_byproduct_kgh;
+        const roasted = F * 0.97;
         const info = {
-            beans: ['BEANS', F, `Whole roasted beans, d80 ≈ ${(D.params.feed_d80_um / 1000).toFixed(1)} mm. Fresh feed to the circuit.`],
-            millfeed: ['MILL FEED', M, `Fresh beans plus recycled oversize: ${fmt(F, 1)} + ${fmt(R, 1)} kg/h. This is the load the mill must be sized for.`],
-            ground: ['GROUND', M, `Mill discharge. Main mode Rosin–Rammler with d63 = ${prof.millD63} µm (n = ${D.params.rr_uniformity_n}), plus a ${fmt(prof.millFinesFrac * 100, 0)}% fines mode around ${D.params.fines_mode_median_um} µm.`],
-            recycle: ['OVERSIZE RECYCLE', R, `Particles coarser than the ${fmt(r.screen_aperture_um, 0)} µm aperture return to the mixer. Circulating load R/F = ${fmt(r.recycle_ratio, 2)}.`],
-            undersize: ['UNDERSIZE', F, `Screen undersize sent to the cyclone. At steady state it equals the fresh feed; d80 = ${fmt(r.circuit_p80_um, 0)} µm sets the Bond energy.`],
-            product: ['PRODUCT', P, `De-dusted powder: d50 = ${fmt(r.product_d50_um, 0)} µm, d80 = ${fmt(r.product_d80_um, 0)} µm, span = ${fmt(r.product_span, 2)}, fines below 100 µm = ${fmt(r.fines_fraction_pct, 1)}%.`],
-            fines: ['FINES', X, `Cyclone overflow (cut near ${D.params.cyclone_cut_um} µm), ${fmt(100 - r.product_yield_pct, 1)}% of the feed. Collected as a by-product for soluble-coffee extraction.`]
+            feed: ['FEED', F, `Raw coffee beans entering the circuit (at 25 °C, 1 atm with 3% moisture). Fresh solid feed to the roaster.`],
+            beans: ['FEED', F, `Raw coffee beans entering the circuit (at 25 °C, 1 atm with 3% moisture). Fresh solid feed to the roaster.`],
+            roasted: ['ROASTED', roasted, `De-moisturized, brittle roasted whole beans discharging from roaster at 210 °C and 1.013 bar. Ready for low-shear comminution.`],
+            mixed: ['MIXED', M, `Combined solids entering crusher: fresh roasted beans (${fmt(roasted, 1)} kg/h) plus recycled screen oversize (${fmt(R, 1)} kg/h).`],
+            millfeed: ['MIXED', M, `Combined solids entering crusher: fresh roasted beans (${fmt(roasted, 1)} kg/h) plus recycled screen oversize (${fmt(R, 1)} kg/h).`],
+            crushed: ['CRUSHED', M, `Double roll crusher discharge with roll gap ${prof.rollerGap} mm. Controlled fracture distribution (dp < 2087 µm) fed directly to the vibrating screen.`],
+            ground: ['CRUSHED', M, `Double roll crusher discharge with roll gap ${prof.rollerGap} mm. Controlled fracture distribution (dp < 2087 µm) fed directly to the vibrating screen.`],
+            recycle: ['OVERSIZE (RECYCLE)', R, `Coarse grounds (> ${fmt(r.screen_aperture_um, 0)} µm, 1093–2087 µm) returned to the mixer. Closed-loop circulating ratio R/F = ${fmt(r.recycle_ratio, 2)}, eliminating solid waste.`],
+            product: ['PROD (ON-SPEC)', P, `Calibrated on-spec coffee powder: d50 = ${fmt(r.product_d50_um, 0)} µm, d80 = ${fmt(r.product_d80_um, 0)} µm, span = ${fmt(r.product_span, 2)}. 0.00% boulders (> 1590 µm), yield = ${fmt(r.product_yield_pct, 1)}%.`],
+            fines: ['FINE (DUST)', X, `Screen undersize super-fines (< 597 µm), ${fmt(100 - r.product_yield_pct, 1)}% of fresh feed. De-dusted by-product stream collected for instant soluble coffee extraction.`],
+            undersize: ['UNDERSIZE', F, `Screen undersize stream entering secondary classification.`]
         };
-        return info[key];
+        return info[key] || ['STREAM', F, 'Stream information'];
     }
 
     function renderStreamDetail() {
@@ -331,7 +336,7 @@
 
     function renderHero() {
         const stats = D.profiles.map(p => {
-            const r = simulate(p.name, 250, p.designAperture);
+            const r = simulate(p.name, 100, p.designAperture);
             return { y: r.product_yield_pct, s: r.product_span, f: (1 - r.fines_fraction_pct / p.conventional.finesPct) * 100 };
         });
         const range = (k, n, suffix) => {
@@ -361,21 +366,30 @@
         if ($('val-feed-span')) $('val-feed-span').textContent = `${feedSpan.toFixed(2)}`;
         $('val-screen-mesh').textContent = `${mesh} µm`;
 
-        $('out-power').textContent = `${fmt(r.mill_power_kw, 2)} kW`;
-        $('out-spec-energy').textContent = `Specific energy ${fmt(r.specific_energy_kwh_per_kg * 1000, 2)} kWh per tonne of fresh feed`;
-        $('out-recycle').textContent = `${fmt(r.recycle_rate_kgh, 1)} kg/h`;
-        $('out-recycle-ratio').textContent = `Circulating load R/F = ${fmt(r.recycle_ratio, 2)} · mill throughput ${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
-        $('out-yield').textContent = `${fmt(r.product_yield_pct, 1)}%`;
-        $('out-product').textContent = `${fmt(r.product_rate_kgh, 1)} kg/h product · ${fmt(r.fines_byproduct_kgh, 1)} kg/h fines by-product`;
+        // Comminution power (Bond's law)
+        if ($('out-power')) $('out-power').textContent = `${fmt(r.mill_power_kw, 2)} kW`;
+        if ($('out-spec-energy')) $('out-spec-energy').textContent = `Specific energy ${fmt(r.specific_energy_kwh_per_kg * 1000, 2)} kWh/t · fresh feed basis`;
+
+        // Product mass rate & yield
+        if ($('out-product-mass')) $('out-product-mass').textContent = `${fmt(r.product_rate_kgh, 1)} kg/h`;
+        if ($('out-product-yield')) $('out-product-yield').textContent = `On-spec yield: ${fmt(r.product_yield_pct, 1)}% · 0.00% boulders`;
+        if ($('out-yield')) $('out-yield').textContent = `${fmt(r.product_yield_pct, 1)}%`;
+        if ($('out-product')) $('out-product').textContent = `${fmt(r.product_rate_kgh, 1)} kg/h product · ${fmt(r.fines_byproduct_kgh, 1)} kg/h fines`;
+
+        // Recycle mass rate & ratio
+        if ($('out-recycle-mass')) $('out-recycle-mass').textContent = `${fmt(r.recycle_rate_kgh, 1)} kg/h`;
+        if ($('out-recycle-sub')) $('out-recycle-sub').textContent = `Circulating load R/F = ${fmt(r.recycle_ratio, 2)} · crusher feed ${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
+        if ($('out-recycle')) $('out-recycle').textContent = `${fmt(r.recycle_rate_kgh, 1)} kg/h`;
+        if ($('out-recycle-ratio')) $('out-recycle-ratio').textContent = `Circulating load R/F = ${fmt(r.recycle_ratio, 2)} · mill throughput ${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
         
-        // Full product size distribution percentiles
+        // Full product size distribution percentiles (d10, d50, d80, d90, span)
         const d50 = r.product_d50_um;
         const d80 = r.product_d80_um;
         const span = r.product_span;
         const d10 = Math.max(10, d50 * (1 - span * 0.42));
         const d90 = d50 * (1 + span * 0.58);
-        $('out-d50').textContent = `${fmt(d50, 0)} µm`;
-        $('out-span').textContent = `d10: ${fmt(d10, 0)} µm · d50: ${fmt(d50, 0)} µm · d80: ${fmt(d80, 0)} µm · d90: ${fmt(d90, 0)} µm · Span: ${fmt(span, 2)}`;
+        if ($('out-d50')) $('out-d50').textContent = `d50 = ${fmt(d50, 0)} µm`;
+        if ($('out-span')) $('out-span').textContent = `d10: ${fmt(d10, 0)} µm · d50: ${fmt(d50, 0)} µm · d80: ${fmt(d80, 0)} µm · d90: ${fmt(d90, 0)} µm · Span: ${fmt(span, 2)}`;
 
         // Double roll Angle of Nip and Capacity
         if ($('out-nip')) {
@@ -386,23 +400,31 @@
         }
         if ($('out-capacity')) {
             $('out-capacity').textContent = `${fmt(roll.Q_practical, 0)} kg/h`;
-            $('out-capacity-sub').textContent = `Load ${fmt(roll.loadRatio, 0)}% of practical capacity (${fmt(r.mill_total_feed_kgh, 0)} kg/h total mill feed)`;
+            $('out-capacity-sub').textContent = `Load ${fmt(roll.loadRatio, 0)}% of practical capacity (${fmt(r.mill_total_feed_kgh, 0)} kg/h total crusher feed)`;
         }
 
-        $('out-fines').textContent = `${fmt(r.fines_fraction_pct, 1)}%`;
-        $('out-fines-cmp').textContent = `${fmt((1 - r.fines_fraction_pct / prof.conventional.finesPct) * 100, 0)}% lower than the conventional grinder model (${fmt(prof.conventional.finesPct, 1)}%)`;
-        $('out-ergun').textContent = `${fmt(r.ergun_pressure_drop_kPa, 3)} kPa`;
-        $('out-ergun-cmp').textContent = `Sauter d32 = ${fmt(r.sauter_d32_um, 0)} µm · conventional bed ${fmt(prof.conventional.dP, 3)} kPa (clean-bed estimate)`;
+        // Fines mass & Ergun bed ΔP
+        if ($('out-fines-mass')) $('out-fines-mass').textContent = `${fmt(r.fines_byproduct_kgh, 1)} kg/h`;
+        if ($('out-fines-sub')) $('out-fines-sub').textContent = `Super-fines (< 597 µm) for instant coffee soluble extraction`;
+        if ($('out-fines')) $('out-fines').textContent = `${fmt(r.fines_fraction_pct, 1)}%`;
+        if ($('out-fines-cmp')) $('out-fines-cmp').textContent = `${fmt((1 - r.fines_fraction_pct / prof.conventional.finesPct) * 100, 0)}% lower than conventional grinder (${fmt(prof.conventional.finesPct, 1)}%)`;
+        if ($('out-ergun')) $('out-ergun').textContent = `${fmt(r.ergun_pressure_drop_kPa, 3)} kPa`;
+        if ($('out-ergun-cmp')) $('out-ergun-cmp').textContent = `Sauter d32 = ${fmt(r.sauter_d32_um, 0)} µm · conventional bed ${fmt(prof.conventional.dP, 3)} kPa (clean bed)`;
 
-        $('pfd-beans').textContent = `${fmt(feed, 0)} kg/h`;
-        $('pfd-millfeed').textContent = `${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
-        $('pfd-ground').textContent = `${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
-        $('pfd-recycle').textContent = `${fmt(r.recycle_rate_kgh, 0)} kg/h`;
-        $('pfd-undersize').textContent = `${fmt(feed, 0)} kg/h`;
-        $('pfd-product').textContent = `${fmt(r.product_rate_kgh, 0)} kg/h`;
-        $('pfd-fines').textContent = `${fmt(r.fines_byproduct_kgh, 1)} kg/h`;
-        $('pfd-gap').textContent = `gap ${prof.rollerGap} mm`;
-        $('pfd-aperture').textContent = `${fmt(mesh, 0)} µm`;
+        // Aspen flowsheet streams
+        const roasted = feed * 0.97;
+        if ($('pfd-feed')) $('pfd-feed').textContent = `${fmt(feed, 0)} kg/h`;
+        if ($('pfd-beans')) $('pfd-beans').textContent = `${fmt(feed, 0)} kg/h`;
+        if ($('pfd-roasted')) $('pfd-roasted').textContent = `${fmt(roasted, 0)} kg/h`;
+        if ($('pfd-mixed')) $('pfd-mixed').textContent = `${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
+        if ($('pfd-millfeed')) $('pfd-millfeed').textContent = `${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
+        if ($('pfd-crushed')) $('pfd-crushed').textContent = `${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
+        if ($('pfd-ground')) $('pfd-ground').textContent = `${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
+        if ($('pfd-recycle')) $('pfd-recycle').textContent = `${fmt(r.recycle_rate_kgh, 0)} kg/h`;
+        if ($('pfd-product')) $('pfd-product').textContent = `${fmt(r.product_rate_kgh, 0)} kg/h`;
+        if ($('pfd-fines')) $('pfd-fines').textContent = `${fmt(r.fines_byproduct_kgh, 0)} kg/h`;
+        if ($('pfd-gap')) $('pfd-gap').textContent = `gap ${prof.rollerGap} mm`;
+        if ($('pfd-aperture')) $('pfd-aperture').textContent = `${fmt(mesh, 0)} µm`;
 
         renderStreamDetail();
         renderCheck(r, prof, roll);

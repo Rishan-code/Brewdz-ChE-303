@@ -119,9 +119,10 @@ code { font-family: var(--font-mono); font-size: 0.88em; background: var(--tint)
 .pfd-scroll { overflow-x: auto; }
 .pfd-svg { width: 100%; min-width: 760px; height: auto; display: block; font-family: var(--font-sans); }
 
-.unit rect, .unit path { fill: var(--tint); stroke: var(--ink); stroke-width: 1.8; }
-.unit .roll { fill: #fff; stroke: var(--crema-deep); stroke-width: 2; }
+.unit rect, .unit circle, .unit polygon, .unit path { fill: var(--tint); stroke: var(--ink); stroke-width: 1.8; }
+.unit .roll { fill: #fff !important; stroke: var(--crema-deep) !important; stroke-width: 2; }
 .unit .deck { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 5 4; }
+.unit .coil { fill: none !important; stroke: var(--crema-deep) !important; stroke-width: 2.2 !important; }
 .u-name { font-size: 12.5px; font-weight: 700; fill: var(--ink); letter-spacing: 0.4px; }
 .u-sub { font-family: var(--font-mono); font-size: 10.5px; fill: var(--muted); }
 
