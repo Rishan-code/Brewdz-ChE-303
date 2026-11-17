@@ -416,6 +416,19 @@
     selectProfile.addEventListener('change', () => { configureMeshSlider(true); update(); });
     $('btn-reset-mesh').addEventListener('click', () => { configureMeshSlider(true); update(); });
 
+    const btnLoadAspen = $('btn-load-aspen');
+    if (btnLoadAspen) {
+        btnLoadAspen.addEventListener('click', () => {
+            selectProfile.value = 'Drip_PourOver';
+            configureMeshSlider(false);
+            inputFeed.value = 100;
+            inputMesh.value = 700;
+            if (inputFeedD50) inputFeedD50.value = 6.50;
+            if (inputFeedSpan) inputFeedSpan.value = 0.60;
+            update();
+        });
+    }
+
     const navToggle = $('nav-toggle'), navLinks = $('nav-links');
     navToggle.addEventListener('click', () => {
         const open = navLinks.classList.toggle('open');
