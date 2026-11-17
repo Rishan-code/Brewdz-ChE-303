@@ -103,6 +103,107 @@
         };
     }
 
+    // ------------------------------------------------ Feed PSD Presets & Curve
+    const FEED_PRESETS = {
+        specialty: {
+            label: "Specialty Whole Roast Baseline (d50 = 6.50 mm)",
+            d50: 6.50,
+            span: 0.60,
+            bins: [
+                { bin: "> 10 mm (Elephant)", wt: 0.05 },
+                { bin: "8 – 10 mm (Large AA)", wt: 0.15 },
+                { bin: "6 – 8 mm (Grade A Standard)", wt: 0.60 },
+                { bin: "4 – 6 mm (Peaberry/Grade B)", wt: 0.18 },
+                { bin: "< 4 mm (Broken Bean)", wt: 0.02 }
+            ]
+        },
+        aspen1: {
+            label: "Aspen Run 1: Elephant Beans (d50 = 8.10 mm)",
+            d50: 8.10,
+            span: 0.55,
+            bins: [
+                { bin: "> 10 mm", wt: 0.10 },
+                { bin: "8 – 10 mm", wt: 0.50 },
+                { bin: "6 – 8 mm", wt: 0.35 },
+                { bin: "< 6 mm", wt: 0.05 }
+            ]
+        },
+        aspen2: {
+            label: "Aspen Run 2: Bimodal Wide Blend (d50 = 8.80 mm)",
+            d50: 8.80,
+            span: 0.85,
+            bins: [
+                { bin: "> 12 mm", wt: 0.28 },
+                { bin: "10 – 12 mm", wt: 0.09 },
+                { bin: "8 – 10 mm", wt: 0.38 },
+                { bin: "6 – 8 mm", wt: 0.18 },
+                { bin: "< 6 mm", wt: 0.07 }
+            ]
+        },
+        aspen3: {
+            label: "Aspen Run 3: Broad Graded Blend (d50 = 7.60 mm)",
+            d50: 7.60,
+            span: 0.75,
+            bins: [
+                { bin: "> 10 mm", wt: 0.17 },
+                { bin: "8 – 10 mm", wt: 0.31 },
+                { bin: "6 – 8 mm", wt: 0.30 },
+                { bin: "4 – 6 mm", wt: 0.15 },
+                { bin: "< 4 mm", wt: 0.07 }
+            ]
+        },
+        aspen4: {
+            label: "Aspen Run 4: Bell-Curve Roasted Whole Beans (d50 = 7.05 mm)",
+            d50: 7.05,
+            span: 0.62,
+            bins: [
+                { bin: "> 10 mm", wt: 0.15 },
+                { bin: "8 – 10 mm", wt: 0.27 },
+                { bin: "6 – 8 mm", wt: 0.38 },
+                { bin: "4 – 6 mm", wt: 0.15 },
+                { bin: "< 4 mm", wt: 0.05 }
+            ]
+        },
+        aspen5: {
+            label: "Aspen Run 5: Skewed Arabica Blend (d50 = 6.80 mm)",
+            d50: 6.80,
+            span: 0.60,
+            bins: [
+                { bin: "> 10 mm", wt: 0.09 },
+                { bin: "8 – 10 mm", wt: 0.28 },
+                { bin: "6 – 8 mm", wt: 0.44 },
+                { bin: "4 – 6 mm", wt: 0.16 },
+                { bin: "< 4 mm", wt: 0.03 }
+            ]
+        },
+        aspen6: {
+            label: "Aspen Run 6: Calibrated Plantation A (d50 = 7.40 mm)",
+            d50: 7.40,
+            span: 0.65,
+            bins: [
+                { bin: "> 10 mm", wt: 0.13 },
+                { bin: "8 – 10 mm", wt: 0.29 },
+                { bin: "6 – 8 mm", wt: 0.40 },
+                { bin: "4 – 6 mm", wt: 0.15 },
+                { bin: "< 4 mm", wt: 0.03 }
+            ]
+        }
+    };
+
+    function calcFeedPSDCurve(d50_mm, span) {
+        const d50_um = d50_mm * 1000;
+        const sigma_g = Math.max(1.15, 1 + span * 0.45);
+        const sizes = [1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500, 8000, 8500, 9000, 9500, 10000, 11000, 12000, 13000, 14000, 15000, 16000];
+        const lnSigma = Math.log(sigma_g);
+        const denom = Math.sqrt(2 * Math.PI) * lnSigma;
+        return sizes.map(d => {
+            const z = Math.log(d / d50_um) / lnSigma;
+            const pdf = Math.exp(-0.5 * z * z) / (d * denom);
+            const frequency = pdf * d * 180;
+            return { x: d, y: Math.max(0, frequency) };
+        });
+    }
+
     const fmt = (x, n) => Number(x).toFixed(n);
     const pctDiff = (a, b) => (b === 0 ? 0 : Math.abs(a - b) / Math.abs(b) * 100);
 
@@ -110,6 +211,9 @@
     const inputFeed = $('input-feed-rate');
     const inputFeedD50 = $('input-feed-d50');
     const inputFeedSpan = $('input-feed-span');
+    const selectFeedPSD = $('select-feed-psd');
+    const btnToggleFeedTable = $('btn-toggle-feed-table');
+    const feedTableContainer = $('feed-table-container');
     const inputMesh = $('input-screen-mesh');
     const selectProfile = $('select-grind-profile');
     let activeStream = 'product';
@@ -240,18 +344,19 @@
             type: 'line',
             data: {
                 datasets: [
-                    { label: 'Conventional open-loop grinder', data: [], borderColor: C.conv, backgroundColor: 'rgba(180,85,63,0.12)', borderDash: [6, 4], borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3 },
-                    { label: 'BrewDz closed-loop product', data: [], borderColor: C.brew, backgroundColor: 'rgba(47,125,91,0.18)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3 }
+                    { label: 'Input: Feed Size Distribution (Whole Beans)', data: [], borderColor: '#D4A373', backgroundColor: 'rgba(212,163,115,0.14)', borderDash: [6, 4], borderWidth: 2.2, pointRadius: 0, fill: true, tension: 0.3 },
+                    { label: 'Conventional open-loop grinder', data: [], borderColor: C.conv, backgroundColor: 'transparent', borderDash: [4, 4], borderWidth: 1.5, pointRadius: 0, tension: 0.3 },
+                    { label: 'Output: BrewDz Closed-Loop Product', data: [], borderColor: C.brew, backgroundColor: 'rgba(47,125,91,0.22)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3 }
                 ]
             },
             plugins: [apertureLine],
             options: {
                 responsive: true, maintainAspectRatio: false, animation: { duration: 200 },
-                plugins: { legend, apertureLine: { value: null }, tooltip: { callbacks: { title: i => `${i[0].parsed.x} µm`, label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(0)} %/decade` } } },
+                plugins: { legend, apertureLine: { value: null }, tooltip: { callbacks: { title: i => `${i[0].parsed.x.toFixed(0)} µm`, label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(0)} %/decade` } } },
                 scales: {
                     x: axis('Particle size (µm, log scale)', {
-                        type: 'logarithmic', min: 10, max: 4000,
-                        ticks: { color: C.muted, callback: v => ([10, 30, 100, 300, 1000, 3000].includes(v) ? v : '') }
+                        type: 'logarithmic', min: 10, max: 20000,
+                        ticks: { color: C.muted, callback: v => ([10, 30, 100, 300, 1000, 3000, 10000].includes(v) ? v : '') }
                     }),
                     y: axis('Mass frequency (% per log decade)', { beginAtZero: true })
                 }
@@ -275,14 +380,15 @@
         });
     }
 
-    function updateCharts(r, prof) {
+    function updateCharts(r, prof, feedD50, feedSpan) {
         if (!HAS_CHART) return;
         chartPower.data.datasets[3].data = [{ x: r.feed_rate_kgh, y: r.mill_power_kw }];
         chartPower.data.datasets.forEach((ds, i) => { if (i < 3) ds.borderWidth = D.profiles[i].name === prof.name ? 3.5 : 1.5; });
         chartPower.update();
 
-        chartPSD.data.datasets[0].data = D.chartSizes.map((s, i) => ({ x: s, y: prof.psdConventional[i] }));
-        chartPSD.data.datasets[1].data = D.chartSizes.map((s, i) => ({ x: s, y: prof.psdBrewdz[i] }));
+        chartPSD.data.datasets[0].data = calcFeedPSDCurve(feedD50, feedSpan);
+        chartPSD.data.datasets[1].data = D.chartSizes.map((s, i) => ({ x: s, y: prof.psdConventional[i] }));
+        chartPSD.data.datasets[2].data = D.chartSizes.map((s, i) => ({ x: s, y: prof.psdBrewdz[i] }));
         chartPSD.options.plugins.apertureLine.value = r.screen_aperture_um;
         chartPSD.update();
 
@@ -428,12 +534,71 @@
 
         renderStreamDetail();
         renderCheck(r, prof, roll);
-        updateCharts(r, prof);
+        updateCharts(r, prof, feedD50, feedSpan);
+    }
+
+    function renderFeedMeshTable(presetKey, feedD50, feedSpan) {
+        const tbody = $('feed-mesh-tbody');
+        if (!tbody) return;
+        const preset = FEED_PRESETS[presetKey];
+        let bins = [];
+        if (preset && preset.bins) {
+            bins = preset.bins;
+        } else {
+            const d50 = feedD50;
+            bins = [
+                { bin: `> ${(d50 * 1.4).toFixed(1)} mm`, wt: 0.10 },
+                { bin: `${(d50 * 1.15).toFixed(1)} – ${(d50 * 1.4).toFixed(1)} mm`, wt: 0.25 },
+                { bin: `${(d50 * 0.85).toFixed(1)} – ${(d50 * 1.15).toFixed(1)} mm`, wt: 0.45 },
+                { bin: `< ${(d50 * 0.85).toFixed(1)} mm`, wt: 0.20 }
+            ];
+        }
+        tbody.innerHTML = bins.map(b => `
+            <tr style="border-bottom:1px solid rgba(0,0,0,0.06);">
+                <td style="padding:0.25rem 0; font-family:var(--font-mono);">${b.bin}</td>
+                <td style="padding:0.25rem 0; text-align:right; font-family:var(--font-mono); font-weight:600;">${(b.wt * 100).toFixed(1)}%</td>
+            </tr>
+        `).join('');
+    }
+
+    if (selectFeedPSD) {
+        selectFeedPSD.addEventListener('change', () => {
+            const key = selectFeedPSD.value;
+            if (FEED_PRESETS[key]) {
+                inputFeedD50.value = FEED_PRESETS[key].d50;
+                inputFeedSpan.value = FEED_PRESETS[key].span;
+                renderFeedMeshTable(key, FEED_PRESETS[key].d50, FEED_PRESETS[key].span);
+            }
+            update();
+        });
+    }
+
+    if (btnToggleFeedTable && feedTableContainer) {
+        btnToggleFeedTable.addEventListener('click', () => {
+            const isHidden = feedTableContainer.style.display === 'none';
+            feedTableContainer.style.display = isHidden ? 'block' : 'none';
+            btnToggleFeedTable.textContent = isHidden ? '▲ Hide Feed Sieve Distribution Table' : '📋 View Feed Sieve Distribution Table';
+            if (isHidden) {
+                renderFeedMeshTable(selectFeedPSD ? selectFeedPSD.value : 'specialty', parseFloat(inputFeedD50.value), parseFloat(inputFeedSpan.value));
+            }
+        });
     }
 
     inputFeed.addEventListener('input', update);
-    if (inputFeedD50) inputFeedD50.addEventListener('input', update);
-    if (inputFeedSpan) inputFeedSpan.addEventListener('input', update);
+    if (inputFeedD50) {
+        inputFeedD50.addEventListener('input', () => {
+            if (selectFeedPSD && selectFeedPSD.value !== 'custom') selectFeedPSD.value = 'custom';
+            renderFeedMeshTable('custom', parseFloat(inputFeedD50.value), parseFloat(inputFeedSpan.value));
+            update();
+        });
+    }
+    if (inputFeedSpan) {
+        inputFeedSpan.addEventListener('input', () => {
+            if (selectFeedPSD && selectFeedPSD.value !== 'custom') selectFeedPSD.value = 'custom';
+            renderFeedMeshTable('custom', parseFloat(inputFeedD50.value), parseFloat(inputFeedSpan.value));
+            update();
+        });
+    }
     inputMesh.addEventListener('input', update);
     selectProfile.addEventListener('change', () => { configureMeshSlider(true); update(); });
     $('btn-reset-mesh').addEventListener('click', () => { configureMeshSlider(true); update(); });
@@ -441,12 +606,14 @@
     const btnLoadAspen = $('btn-load-aspen');
     if (btnLoadAspen) {
         btnLoadAspen.addEventListener('click', () => {
+            if (selectFeedPSD) selectFeedPSD.value = 'specialty';
             selectProfile.value = 'Drip_PourOver';
             configureMeshSlider(false);
             inputFeed.value = 100;
             inputMesh.value = 700;
             if (inputFeedD50) inputFeedD50.value = 6.50;
             if (inputFeedSpan) inputFeedSpan.value = 0.60;
+            renderFeedMeshTable('specialty', 6.50, 0.60);
             update();
         });
     }
@@ -463,6 +630,7 @@
     configureMeshSlider(true);
     renderParams();
     renderHero();
+    renderFeedMeshTable('specialty', 6.50, 0.60);
     initCharts();
     update();
 })();

@@ -250,23 +250,78 @@
         <!-- Calculator -->
         <section class="container section" id="calculator">
             <div class="section-header">
-                <h2>Process Calculator: Inputs &amp; Outputs</h2>
-                <p>Simulating the closed-loop comminution and classification circuit. Bilinearly interpolated from the Aspen Plus and Python steady-state simulation dataset.</p>
+                <h2>Process Calculator: Feed Size Distribution &rarr; Product Size Distribution</h2>
+                <p>Simulating the comminution transformation from <strong>Input (Feed Size Distribution)</strong> to <strong>Output (Product Size Distribution)</strong> with steady-state oversize recycle.</p>
             </div>
 
             <div class="calc-grid">
+                <!-- Left: Inputs -->
                 <div class="card inputs-card">
-                    <h3>Process Inputs</h3>
-                    <p class="small muted" style="margin-bottom: 1.2rem;">Configure the feed size distribution and operational cut size below.</p>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                        <h3 style="margin:0; font-size:1.15rem;">Input = Feed Size Distribution</h3>
+                        <span class="pill pill-roaster" style="font-size:0.75rem;">Primary Input</span>
+                    </div>
+                    <p class="small muted" style="margin-bottom: 1.1rem;">Select from 6 Aspen Plus V14 validated bean distributions or configure custom whole bean dimensions.</p>
 
                     <div class="input-group">
-                        <label for="select-grind-profile">Grind profile</label>
-                        <select id="select-grind-profile" class="styled-select"></select>
+                        <label for="select-feed-psd">Feed Size Distribution Preset</label>
+                        <select id="select-feed-psd" class="styled-select">
+                            <option value="specialty" selected>Specialty Whole Roast Baseline (d50 = 6.50 mm, 5–8 mm)</option>
+                            <option value="aspen1">Aspen Run 1: Elephant Beans (d50 = 8.10 mm, 6–11 mm)</option>
+                            <option value="aspen2">Aspen Run 2: Bimodal Wide Blend (d50 = 8.80 mm, 2.5–15 mm)</option>
+                            <option value="aspen3">Aspen Run 3: Broad Graded Blend (d50 = 7.60 mm, 0.6–15 mm)</option>
+                            <option value="aspen4">Aspen Run 4: Bell-Curve Roasted Whole Beans (d50 = 7.05 mm)</option>
+                            <option value="aspen5">Aspen Run 5: Skewed Arabica Blend (d50 = 6.80 mm)</option>
+                            <option value="aspen6">Aspen Run 6: Calibrated Plantation A (d50 = 7.40 mm)</option>
+                            <option value="custom">Custom Feed Size Distribution</option>
+                        </select>
                     </div>
 
                     <div class="input-group">
                         <div class="slider-header">
-                            <label for="input-feed-rate">Input = Fresh Bean Feed Rate (F)</label>
+                            <label for="input-feed-d50">Feed Bean Median Size (d50,feed)</label>
+                            <output class="slider-val" id="val-feed-d50" for="input-feed-d50">6.50 mm</output>
+                        </div>
+                        <input type="range" id="input-feed-d50" min="5.0" max="11.0" step="0.05" value="6.50">
+                        <div class="range-bounds"><span>5.00 mm (peaberry)</span><span>6.50 mm (design)</span><span>11.00 mm (elephant bean)</span></div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-span">Feed PSD Span ((d90 &minus; d10)/d50)</label>
+                            <output class="slider-val" id="val-feed-span" for="input-feed-span">0.60</output>
+                        </div>
+                        <input type="range" id="input-feed-span" min="0.40" max="0.90" step="0.02" value="0.60">
+                        <div class="range-bounds"><span>0.40 (narrow graded)</span><span>0.60 (standard)</span><span>0.90 (broad raw blend)</span></div>
+                    </div>
+
+                    <!-- Feed Sieve Table Toggle -->
+                    <div style="margin-bottom: 1.25rem;">
+                        <button type="button" class="btn btn-ghost" id="btn-toggle-feed-table" style="width:100%; font-size:0.8rem; padding:0.45rem 0.8rem; color:var(--crema-deep); border-color:var(--line);">
+                            📋 View Feed Sieve Distribution Table
+                        </button>
+                        <div id="feed-table-container" style="display:none; margin-top:0.6rem; max-height:160px; overflow-y:auto; border:1px solid var(--line); border-radius:6px; background:var(--tint); padding:0.4rem 0.6rem; font-size:0.78rem;">
+                            <table style="width:100%; border-collapse:collapse;" id="feed-mesh-table">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--line); text-align:left; color:var(--muted);">
+                                        <th>Size Interval</th>
+                                        <th style="text-align:right;">Weight %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feed-mesh-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <hr style="border:none; border-top:1px solid var(--line); margin: 1.2rem 0;">
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                        <h4 style="font-size:0.95rem; font-weight:700; color:var(--ink);">Circuit Operating Conditions</h4>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-rate">Fresh Bean Feed Rate (F)</label>
                             <output class="slider-val" id="val-feed-rate" for="input-feed-rate">100 kg/h</output>
                         </div>
                         <input type="range" id="input-feed-rate" min="50" max="500" step="5" value="100">
@@ -274,21 +329,8 @@
                     </div>
 
                     <div class="input-group">
-                        <div class="slider-header">
-                            <label for="input-feed-d50">Input = Feed Size Distribution (d50,feed)</label>
-                            <output class="slider-val" id="val-feed-d50" for="input-feed-d50">6.50 mm</output>
-                        </div>
-                        <input type="range" id="input-feed-d50" min="5.0" max="11.0" step="0.05" value="6.50">
-                        <div class="range-bounds"><span>5.00 mm (peaberry)</span><span>10.75 mm (Aspen elephant)</span></div>
-                    </div>
-
-                    <div class="input-group">
-                        <div class="slider-header">
-                            <label for="input-feed-span">Input = Feed PSD Span ((d90 &minus; d10)/d50)</label>
-                            <output class="slider-val" id="val-feed-span" for="input-feed-span">0.60</output>
-                        </div>
-                        <input type="range" id="input-feed-span" min="0.40" max="0.90" step="0.02" value="0.60">
-                        <div class="range-bounds"><span>0.40 (narrow graded)</span><span>0.90 (broad raw blend)</span></div>
+                        <label for="select-grind-profile">Grind Profile</label>
+                        <select id="select-grind-profile" class="styled-select"></select>
                     </div>
 
                     <div class="input-group">
@@ -307,28 +349,41 @@
                     </p>
                 </div>
 
+                <!-- Right: Outputs -->
                 <div class="card outputs-card">
-                    <h3>Process Outputs & Comminution Mechanics</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                        <h3 style="margin:0; font-size:1.15rem;">Output = Product Size Distribution &amp; Parameters</h3>
+                        <span class="pill pill-pass" style="font-size:0.75rem;">Calculated Outputs</span>
+                    </div>
+
                     <div class="results-grid" aria-live="polite">
-                        <!-- 1. Product mass -->
-                        <div class="result-box highlight">
+                        <!-- 1. Output = Product Size Distribution -->
+                        <div class="result-box highlight" style="grid-column: 1 / -1;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="res-label" style="color:var(--crema);">Output = Product Size Distribution (PSD)</span>
+                                <span class="pill pill-pass" id="out-psd-badge">Narrow Span</span>
+                            </div>
+                            <div class="res-num" id="out-d50" style="color:#FFF;">&ndash;</div>
+                            <span class="res-sub" id="out-span" style="color:#E4D6C6; font-size:0.82rem; margin-bottom:0.5rem;"></span>
+                            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; font-size:0.76rem; border-top:1px solid rgba(255,255,255,0.15); padding-top:0.5rem;">
+                                <span style="background:rgba(255,255,255,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Target Mode (600–1100 µm): <strong style="color:var(--crema);">67.4%</strong></span>
+                                <span style="background:rgba(255,255,255,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Fines (&lt; 597 µm): <strong>31.9%</strong></span>
+                                <span style="background:rgba(255,255,255,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Boulders (&gt; 1590 µm): <strong style="color:#81C784;">0.00% (None)</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Product mass -->
+                        <div class="result-box">
                             <span class="res-label">Product Mass (PROD Stream)</span>
                             <div class="res-num" id="out-product-mass">&ndash;</div>
                             <span class="res-sub" id="out-product-yield"></span>
                         </div>
 
-                        <!-- 2. Recycle mass -->
+                        <!-- 3. Recycle mass -->
                         <div class="result-box">
                             <span class="res-label">Recycle Mass (OVERSIZE Stream)</span>
                             <div class="res-num" id="out-recycle-mass">&ndash;</div>
                             <span class="res-sub" id="out-recycle-sub"></span>
-                        </div>
-
-                        <!-- 3. Output = Product Size Distribution -->
-                        <div class="result-box">
-                            <span class="res-label">Output = Product Size Distribution (PSD)</span>
-                            <div class="res-num" id="out-d50">&ndash;</div>
-                            <span class="res-sub" id="out-span"></span>
                         </div>
 
                         <!-- 4. Roll Crusher: Angle of Nip -->
@@ -376,8 +431,8 @@
         <!-- Charts -->
         <section class="container section" id="plots">
             <div class="section-header">
-                <h2>Process performance</h2>
-                <p>All three charts follow the grind profile and operating point selected above.</p>
+                <h2>Process Performance &amp; PSD Curves</h2>
+                <p>Visualizing comminution and classification: <strong>Input Feed Size Distribution</strong> &rarr; <strong>Output Product Size Distribution</strong>.</p>
             </div>
             <p class="chart-fallback" id="chart-fallback" hidden>Charts need an internet connection to load Chart.js. The calculator above still works offline.</p>
 
@@ -393,11 +448,11 @@
 
                 <div class="card chart-card">
                     <div class="chart-header">
-                        <h3>Particle size distribution</h3>
-                        <span class="chart-tag">Model PSD</span>
+                        <h3>Particle Size Distribution: Feed vs. Product</h3>
+                        <span class="chart-tag">Input PSD &rarr; Output PSD</span>
                     </div>
-                    <div class="chart-container"><canvas id="chartPSD" role="img" aria-label="Particle size distribution of BrewDz product compared with a conventional grinder"></canvas></div>
-                    <p class="chart-note">BrewDz curve at the design aperture; the dashed line marks your selected cut size.</p>
+                    <div class="chart-container"><canvas id="chartPSD" role="img" aria-label="Particle size distribution: Input feed size distribution vs output product size distribution"></canvas></div>
+                    <p class="chart-note">Gold curve: Input Feed Size Distribution (whole beans, mm scale). Green curve: Output Product Size Distribution (calibrated powder, µm scale).</p>
                 </div>
 
                 <div class="card chart-card wide">

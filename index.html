@@ -2,62 +2,630 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=frontend/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrewDz Particle Engineering | ChE 303</title>
+    <title>BrewDz Particle Engineering | Closed-Loop Coffee Grinding</title>
+    <meta name="description" content="ChE 303 course project: a closed-loop roller mill, screen and cyclone circuit for narrow-span coffee powder, with an interactive process calculator.">
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Plus+Jakarta+Sans:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #2C1810;
-            color: #F9F6F1;
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-            text-align: center;
-        }
-        .container {
-            max-width: 480px;
-            padding: 2rem;
-        }
-        h1 {
-            font-family: 'Fraunces', Georgia, serif;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-            color: #D4A373;
-        }
-        p {
-            color: #D9C7B3;
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-        a {
-            display: inline-block;
-            background: #D4A373;
-            color: #2C1810;
-            text-decoration: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700;
-        }
-        a:hover {
-            background: #E0B487;
-        }
-    </style>
-    <script>
-        window.location.replace("frontend/");
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>BrewDz Particle Engineering</h1>
-        <p>Redirecting to the interactive process portal and simulation dashboard...</p>
-        <a href="frontend/">Open Interactive Portal &rarr;</a>
-    </div>
+    <a class="skip-link" href="#calculator">Skip to calculator</a>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <a class="logo" href="#top" aria-label="BrewDz Particle Engineering home">
+                <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+                    <circle cx="20" cy="20" r="19" fill="#2C1810"/>
+                    <ellipse cx="20" cy="20" rx="9" ry="12.5" fill="#D4A373" transform="rotate(28 20 20)"/>
+                    <path d="M15 10.5 C 22 16, 17 24, 25 29.5" fill="none" stroke="#2C1810" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+                <span class="logo-text">
+                    <span class="brand">BrewDz</span>
+                    <span class="sub">Particle Engineering</span>
+                </span>
+            </a>
+            <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="nav-links" id="nav-links">
+                <a href="#problem">Company</a>
+                <a href="#process">Aspen Flowsheet</a>
+                <a href="#calculator">Inputs &amp; Outputs</a>
+                <a href="#plots">PSD &amp; Charts</a>
+                <a href="#method">Roll Crusher Mechanics</a>
+                <a href="#competitors">Market</a>
+                <a href="#team">Team</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="top">
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">ChE 303 · Fluid Particle Systems · Course Project</p>
+                <h1>Engineering the perfect coffee powder</h1>
+                <p class="hero-desc">
+                    A closed-loop roller mill, vibrating screen and cyclone circuit that turns whole roasted beans
+                    into a narrow, repeatable particle size distribution &mdash; fewer fines, no boulders, even extraction.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="#calculator">Open Process Calculator</a>
+                    <a class="btn btn-ghost" href="#process">View Aspen Flowsheet</a>
+                    <a class="btn btn-ghost" href="simulation_dataset.csv" download>Download dataset (CSV)</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <span class="stat-num" id="hero-yield">&ndash;</span>
+                        <span class="stat-label">On-spec product yield</span>
+                        <span class="stat-basis">model result, design aperture</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="hero-fines">&ndash;</span>
+                        <span class="stat-label">Fewer fines (&lt; 100 µm)</span>
+                        <span class="stat-basis">vs. modelled open-loop grinder</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="hero-span">&ndash;</span>
+                        <span class="stat-label">PSD span (d90 &minus; d10) / d50</span>
+                        <span class="stat-basis">model result, design aperture</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num">&lt; 28 °C</span>
+                        <span class="stat-label">Chilled-roll grinding</span>
+                        <span class="stat-basis">design target, not modelled</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem & solution -->
+        <section class="container section" id="problem">
+            <div class="section-header">
+                <h2>The engineering problem and our answer</h2>
+                <p>Particle size decides bed permeability, extraction kinetics and, in the end, flavour.</p>
+            </div>
+            <div class="grid-2">
+                <article class="card problem-card">
+                    <h3>Conventional open-loop grinding</h3>
+                    <p>Burr and disc grinders break beans in a single pass and ship whatever comes out, which gives a broad, bimodal distribution:</p>
+                    <ul class="styled-list">
+                        <li><strong>Boulders.</strong> Low surface area and long diffusion paths; water bypasses them, so they under-extract and taste sour.</li>
+                        <li><strong>Fines (&lt; 100 µm).</strong> They dominate the bed's surface area, raise pressure drop (Ergun equation), migrate into filter pores and over-extract into bitterness.</li>
+                        <li><strong>Heat.</strong> High-speed friction warms the grounds and drives off volatile aroma compounds.</li>
+                        <li><strong>No correction.</strong> Without classification, off-size material goes straight into the product.</li>
+                    </ul>
+                </article>
+                <article class="card solution-card">
+                    <h3>The BrewDz closed loop</h3>
+                    <p>BrewDz treats grinding as a classification problem, with every stream accounted for:</p>
+                    <ul class="styled-list">
+                        <li><strong>Chilled low-shear roller mill.</strong> Water-jacketed rolls with a set gap give a narrow main mode and fewer fracture fines.</li>
+                        <li><strong>Vibrating screen.</strong> A defined aperture removes everything coarser than the target cut.</li>
+                        <li><strong>Oversize recycle.</strong> Screen oversize returns to the mill instead of leaving as waste.</li>
+                        <li><strong>Cyclone de-dusting.</strong> Super-fines are pulled out as a separate by-product stream for soluble-coffee extraction.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- Aspen Plus Flowsheet -->
+        <section class="container section" id="process">
+            <div class="section-header">
+                <h2>Aspen Plus Process Flowsheet</h2>
+                <p>Industrial Roaster-Mixer-Crusher-Screen comminution and classification circuit with steady-state oversize recycle matching Aspen Plus V14 flowsheet (<code>Coffee_powder.apwz</code>).</p>
+            </div>
+
+            <div class="card pfd-card">
+                <p class="pfd-tip">Hover, tap or tab through any stream to inspect its flow rate and particle characteristics.</p>
+                <div class="pfd-scroll">
+                    <svg class="pfd-svg" viewBox="0 0 1000 420" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Aspen Plus Process Flowsheet: Roaster-Mixer-Crusher-Screen circuit with oversize recycle">
+                        <defs>
+                            <marker id="arr-main" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M0 1 L8 5 L0 9z" fill="#8A5A2B"/>
+                            </marker>
+                            <marker id="arr-recycle" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M0 1 L8 5 L0 9z" fill="#C2571A"/>
+                            </marker>
+                            <marker id="arr-product" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M0 1 L8 5 L0 9z" fill="#2F7D5B"/>
+                            </marker>
+                            <marker id="arr-fines" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                                <path d="M0 1 L8 5 L0 9z" fill="#7A6A5C"/>
+                            </marker>
+                        </defs>
+
+                        <!-- Streams matching Aspen Plus V14 -->
+                        <!-- 1. FEED -->
+                        <g class="stream s-main" data-stream="feed" tabindex="0" role="button" aria-label="Stream: FEED">
+                            <path class="hit" d="M30 145 H120"/>
+                            <path class="pipe" d="M30 145 H114" marker-end="url(#arr-main)"/>
+                            <path class="flow" d="M30 145 H114"/>
+                            <text class="s-name" x="35" y="128">FEED</text>
+                            <text class="s-flow" x="35" y="168" id="pfd-feed">100 kg/h</text>
+                        </g>
+
+                        <!-- 2. ROASTED -->
+                        <g class="stream s-main" data-stream="roasted" tabindex="0" role="button" aria-label="Stream: ROASTED">
+                            <path class="hit" d="M185 145 H310"/>
+                            <path class="pipe" d="M185 145 H304" marker-end="url(#arr-main)"/>
+                            <path class="flow" d="M185 145 H304"/>
+                            <text class="s-name" x="210" y="128">ROASTED</text>
+                            <text class="s-flow" x="210" y="168" id="pfd-roasted">97 kg/h</text>
+                        </g>
+
+                        <!-- 3. OVERSIZE (Recycle Loop from Screen top to Mixer top) -->
+                        <g class="stream s-recycle" data-stream="recycle" tabindex="0" role="button" aria-label="Stream: OVERSIZE RECYCLE">
+                            <path class="hit" d="M690 170 V55 H340 V115"/>
+                            <path class="pipe" d="M690 170 V55 H340 V110" marker-end="url(#arr-recycle)"/>
+                            <path class="flow" d="M690 170 V55 H340 V110"/>
+                            <rect class="s-tag" x="420" y="38" width="220" height="34" rx="6"/>
+                            <text class="s-name" x="432" y="60">OVERSIZE RECYCLE</text>
+                            <text class="s-flow" x="628" y="60" text-anchor="end" id="pfd-recycle">23 kg/h</text>
+                        </g>
+
+                        <!-- 4. MIXED -->
+                        <g class="stream s-main" data-stream="mixed" tabindex="0" role="button" aria-label="Stream: MIXED">
+                            <path class="hit" d="M365 145 H470 V240"/>
+                            <path class="pipe" d="M365 145 H470 V234" marker-end="url(#arr-main)"/>
+                            <path class="flow" d="M365 145 H470 V234"/>
+                            <text class="s-name" x="395" y="132">MIXED</text>
+                            <text class="s-flow" x="480" y="195" id="pfd-mixed">120 kg/h</text>
+                        </g>
+
+                        <!-- 5. CRUSHED -->
+                        <g class="stream s-main" data-stream="crushed" tabindex="0" role="button" aria-label="Stream: CRUSHED">
+                            <path class="hit" d="M470 300 V340 H560 V210 H620"/>
+                            <path class="pipe" d="M470 300 V340 H560 V210 H614" marker-end="url(#arr-main)"/>
+                            <path class="flow" d="M470 300 V340 H560 V210 H614"/>
+                            <text class="s-name" x="480" y="360">CRUSHED</text>
+                            <text class="s-flow" x="568" y="275" id="pfd-crushed">120 kg/h</text>
+                        </g>
+
+                        <!-- 6. PROD (Screen On-Spec Product) -->
+                        <g class="stream s-product" data-stream="product" tabindex="0" role="button" aria-label="Stream: PROD">
+                            <path class="hit" d="M730 200 H950"/>
+                            <path class="pipe" d="M730 200 H944" marker-end="url(#arr-product)"/>
+                            <path class="flow" d="M730 200 H944"/>
+                            <text class="s-name" x="780" y="184">PROD (ON-SPEC)</text>
+                            <text class="s-flow" x="780" y="224" id="pfd-product">42 kg/h</text>
+                        </g>
+
+                        <!-- 7. FINE (Screen Undersize Dust) -->
+                        <g class="stream s-fines" data-stream="fines" tabindex="0" role="button" aria-label="Stream: FINE">
+                            <path class="hit" d="M700 265 V350 H950"/>
+                            <path class="pipe" d="M700 265 V350 H944" marker-end="url(#arr-fines)"/>
+                            <path class="flow" d="M700 265 V350 H944"/>
+                            <text class="s-name" x="780" y="334">FINE (DUST)</text>
+                            <text class="s-flow" x="780" y="374" id="pfd-fines">55 kg/h</text>
+                        </g>
+
+                        <!-- Units matching Aspen Plus V14 -->
+                        <!-- Block 1: ROASTER -->
+                        <g class="unit">
+                            <circle cx="150" cy="145" r="34" />
+                            <path class="coil" d="M130 145 C136 132, 142 132, 148 145 C154 158, 160 158, 166 145 C170 137, 172 137, 172 145" stroke-linecap="round"/>
+                            <text class="u-name" x="150" y="98" text-anchor="middle">ROASTER</text>
+                            <text class="u-sub" x="150" y="196" text-anchor="middle">210 °C · 1 atm</text>
+                        </g>
+
+                        <!-- Block 2: MIXER -->
+                        <g class="unit">
+                            <polygon points="310,115 365,130 365,160 310,175" />
+                            <text class="u-name" x="337" y="102" text-anchor="middle">MIXER</text>
+                        </g>
+
+                        <!-- Block 3: CRUSHER -->
+                        <g class="unit">
+                            <polygon points="435,240 505,240 488,300 452,300" />
+                            <circle class="roll" cx="460" cy="270" r="12"/>
+                            <circle class="roll" cx="480" cy="270" r="12"/>
+                            <text class="u-name" x="470" y="230" text-anchor="middle">CRUSHER</text>
+                            <text class="u-sub" x="470" y="318" text-anchor="middle" id="pfd-gap">gap 0.55 mm</text>
+                        </g>
+
+                        <!-- Block 4: SCREEN -->
+                        <g class="unit">
+                            <polygon points="620,175 730,190 730,265 670,265 620,225" />
+                            <line class="deck" x1="630" y1="205" x2="720" y2="218"/>
+                            <text class="u-name" x="675" y="165" text-anchor="middle">SCREEN</text>
+                            <text class="u-sub" x="675" y="248" text-anchor="middle" id="pfd-aperture">700 µm</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="stream-detail" id="stream-detail" aria-live="polite">
+                    <div class="sd-head">
+                        <span class="sd-name" id="sd-name">PROD (ON-SPEC)</span>
+                        <span class="sd-flow" id="sd-flow">&ndash;</span>
+                    </div>
+                    <p class="sd-desc" id="sd-desc"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculator -->
+        <section class="container section" id="calculator">
+            <div class="section-header">
+                <h2>Process Calculator: Feed Size Distribution &rarr; Product Size Distribution</h2>
+                <p>Simulating the comminution transformation from <strong>Input (Feed Size Distribution)</strong> to <strong>Output (Product Size Distribution)</strong> with steady-state oversize recycle.</p>
+            </div>
+
+            <div class="calc-grid">
+                <!-- Left: Inputs -->
+                <div class="card inputs-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                        <h3 style="margin:0; font-size:1.15rem;">Input = Feed Size Distribution</h3>
+                        <span class="pill pill-roaster" style="font-size:0.75rem;">Primary Input</span>
+                    </div>
+                    <p class="small muted" style="margin-bottom: 1.1rem;">Select from 6 Aspen Plus V14 validated bean distributions or configure custom whole bean dimensions.</p>
+
+                    <div class="input-group">
+                        <label for="select-feed-psd">Feed Size Distribution Preset</label>
+                        <select id="select-feed-psd" class="styled-select">
+                            <option value="specialty" selected>Specialty Whole Roast Baseline (d50 = 6.50 mm, 5–8 mm)</option>
+                            <option value="aspen1">Aspen Run 1: Elephant Beans (d50 = 8.10 mm, 6–11 mm)</option>
+                            <option value="aspen2">Aspen Run 2: Bimodal Wide Blend (d50 = 8.80 mm, 2.5–15 mm)</option>
+                            <option value="aspen3">Aspen Run 3: Broad Graded Blend (d50 = 7.60 mm, 0.6–15 mm)</option>
+                            <option value="aspen4">Aspen Run 4: Bell-Curve Roasted Whole Beans (d50 = 7.05 mm)</option>
+                            <option value="aspen5">Aspen Run 5: Skewed Arabica Blend (d50 = 6.80 mm)</option>
+                            <option value="aspen6">Aspen Run 6: Calibrated Plantation A (d50 = 7.40 mm)</option>
+                            <option value="custom">Custom Feed Size Distribution</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-d50">Feed Bean Median Size (d50,feed)</label>
+                            <output class="slider-val" id="val-feed-d50" for="input-feed-d50">6.50 mm</output>
+                        </div>
+                        <input type="range" id="input-feed-d50" min="5.0" max="11.0" step="0.05" value="6.50">
+                        <div class="range-bounds"><span>5.00 mm (peaberry)</span><span>6.50 mm (design)</span><span>11.00 mm (elephant bean)</span></div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-span">Feed PSD Span ((d90 &minus; d10)/d50)</label>
+                            <output class="slider-val" id="val-feed-span" for="input-feed-span">0.60</output>
+                        </div>
+                        <input type="range" id="input-feed-span" min="0.40" max="0.90" step="0.02" value="0.60">
+                        <div class="range-bounds"><span>0.40 (narrow graded)</span><span>0.60 (standard)</span><span>0.90 (broad raw blend)</span></div>
+                    </div>
+
+                    <!-- Feed Sieve Table Toggle -->
+                    <div style="margin-bottom: 1.25rem;">
+                        <button type="button" class="btn btn-ghost" id="btn-toggle-feed-table" style="width:100%; font-size:0.8rem; padding:0.45rem 0.8rem; color:var(--crema-deep); border-color:var(--line);">
+                            📋 View Feed Sieve Distribution Table
+                        </button>
+                        <div id="feed-table-container" style="display:none; margin-top:0.6rem; max-height:160px; overflow-y:auto; border:1px solid var(--line); border-radius:6px; background:var(--tint); padding:0.4rem 0.6rem; font-size:0.78rem;">
+                            <table style="width:100%; border-collapse:collapse;" id="feed-mesh-table">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--line); text-align:left; color:var(--muted);">
+                                        <th>Size Interval</th>
+                                        <th style="text-align:right;">Weight %</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="feed-mesh-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <hr style="border:none; border-top:1px solid var(--line); margin: 1.2rem 0;">
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                        <h4 style="font-size:0.95rem; font-weight:700; color:var(--ink);">Circuit Operating Conditions</h4>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-rate">Fresh Bean Feed Rate (F)</label>
+                            <output class="slider-val" id="val-feed-rate" for="input-feed-rate">100 kg/h</output>
+                        </div>
+                        <input type="range" id="input-feed-rate" min="50" max="500" step="5" value="100">
+                        <div class="range-bounds"><span>50 kg/h (pilot)</span><span>100 kg/h (Aspen base)</span><span>500 kg/h (commercial)</span></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="select-grind-profile">Grind Profile</label>
+                        <select id="select-grind-profile" class="styled-select"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-screen-mesh">Screen Aperture (Cut Size)</label>
+                            <output class="slider-val" id="val-screen-mesh" for="input-screen-mesh">700 µm</output>
+                        </div>
+                        <input type="range" id="input-screen-mesh" min="550" max="850" step="5" value="700">
+                        <div class="range-bounds"><span id="mesh-min">550 µm</span><span id="mesh-max">850 µm</span></div>
+                        <button type="button" class="link-btn" id="btn-reset-mesh">Reset to profile design aperture</button>
+                        <button type="button" class="btn btn-ghost" id="btn-load-aspen" style="margin-top:0.75rem; width:100%; font-size:0.85rem; padding:0.5rem 0.8rem; border-color:var(--crema-deep); color:var(--crema-deep);">⚡ Load Aspen Baseline (100 kg/h, 700 µm)</button>
+                    </div>
+
+                    <p class="calc-note" id="calc-note">
+                        Continuous oversize recycle eliminates solid waste and delivers +23.8% higher on-spec product yield compared to open-loop grinding.
+                    </p>
+                </div>
+
+                <!-- Right: Outputs -->
+                <div class="card outputs-card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                        <h3 style="margin:0; font-size:1.15rem;">Output = Product Size Distribution &amp; Parameters</h3>
+                        <span class="pill pill-pass" style="font-size:0.75rem;">Calculated Outputs</span>
+                    </div>
+
+                    <div class="results-grid" aria-live="polite">
+                        <!-- 1. Output = Product Size Distribution -->
+                        <div class="result-box highlight" style="grid-column: 1 / -1;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="res-label" style="color:var(--crema);">Output = Product Size Distribution (PSD)</span>
+                                <span class="pill pill-pass" id="out-psd-badge">Narrow Span</span>
+                            </div>
+                            <div class="res-num" id="out-d50" style="color:#FFF;">&ndash;</div>
+                            <span class="res-sub" id="out-span" style="color:#E4D6C6; font-size:0.82rem; margin-bottom:0.5rem;"></span>
+                            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; font-size:0.76rem; border-top:1px solid rgba(255,255,255,0.15); padding-top:0.5rem;">
+                                <span style="background:rgba(255,255,255,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Target Mode (600–1100 µm): <strong style="color:var(--crema);">67.4%</strong></span>
+                                <span style="background:rgba(255,255,255,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Fines (&lt; 597 µm): <strong>31.9%</strong></span>
+                                <span style="background:rgba(255,255,255,0.1); padding:0.2rem 0.5rem; border-radius:4px;">Boulders (&gt; 1590 µm): <strong style="color:#81C784;">0.00% (None)</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Product mass -->
+                        <div class="result-box">
+                            <span class="res-label">Product Mass (PROD Stream)</span>
+                            <div class="res-num" id="out-product-mass">&ndash;</div>
+                            <span class="res-sub" id="out-product-yield"></span>
+                        </div>
+
+                        <!-- 3. Recycle mass -->
+                        <div class="result-box">
+                            <span class="res-label">Recycle Mass (OVERSIZE Stream)</span>
+                            <div class="res-num" id="out-recycle-mass">&ndash;</div>
+                            <span class="res-sub" id="out-recycle-sub"></span>
+                        </div>
+
+                        <!-- 4. Roll Crusher: Angle of Nip -->
+                        <div class="result-box">
+                            <span class="res-label">Roll Crusher: Angle of Nip (&alpha;)</span>
+                            <div class="res-num" style="display:flex; align-items:baseline; gap:0.5rem; flex-wrap:wrap;">
+                                <span id="out-nip">&ndash;</span>
+                                <span id="out-nip-badge" class="pill pill-pass">✓ PASS (≤ 35.5°)</span>
+                            </div>
+                            <span class="res-sub" id="out-nip-sub">Gripping limit &alpha; &le; 35.5&deg; (&mu; = 0.32)</span>
+                        </div>
+
+                        <!-- 5. Roll Crusher: Practical Capacity -->
+                        <div class="result-box">
+                            <span class="res-label">Roll Crusher: Practical Capacity (Q)</span>
+                            <div class="res-num" id="out-capacity">&ndash;</div>
+                            <span class="res-sub" id="out-capacity-sub">Roll speed 240 rpm &middot; Width 300 mm &middot; &eta;<sub>v</sub> = 25%</span>
+                        </div>
+
+                        <!-- 6. Roll Crusher: Power (Bond's Law) -->
+                        <div class="result-box">
+                            <span class="res-label">Roll Crusher: Power (Bond's Law)</span>
+                            <div class="res-num" id="out-power">&ndash;</div>
+                            <span class="res-sub" id="out-spec-energy"></span>
+                        </div>
+
+                        <!-- 7. Fine Dust Mass (FINE Stream) -->
+                        <div class="result-box">
+                            <span class="res-label">Fine Dust Mass (FINE Stream)</span>
+                            <div class="res-num" id="out-fines-mass">&ndash;</div>
+                            <span class="res-sub" id="out-fines-sub"></span>
+                        </div>
+
+                        <!-- 8. Brew-Bed Pressure Drop (Ergun) -->
+                        <div class="result-box">
+                            <span class="res-label">Brew-Bed Pressure Drop (Ergun)</span>
+                            <div class="res-num" id="out-ergun">&ndash;</div>
+                            <span class="res-sub" id="out-ergun-cmp"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts -->
+        <section class="container section" id="plots">
+            <div class="section-header">
+                <h2>Process Performance &amp; PSD Curves</h2>
+                <p>Visualizing comminution and classification: <strong>Input Feed Size Distribution</strong> &rarr; <strong>Output Product Size Distribution</strong>.</p>
+            </div>
+            <p class="chart-fallback" id="chart-fallback" hidden>Charts need an internet connection to load Chart.js. The calculator above still works offline.</p>
+
+            <div class="chart-grid">
+                <div class="card chart-card">
+                    <div class="chart-header">
+                        <h3>Mill power vs. feed rate</h3>
+                        <span class="chart-tag">Bond's law</span>
+                    </div>
+                    <div class="chart-container"><canvas id="chartPowerFeed" role="img" aria-label="Line chart of mill power against feed rate for the three grind profiles"></canvas></div>
+                    <p class="chart-note">Lines at each profile's design aperture. The marker is your operating point.</p>
+                </div>
+
+                <div class="card chart-card">
+                    <div class="chart-header">
+                        <h3>Particle Size Distribution: Feed vs. Product</h3>
+                        <span class="chart-tag">Input PSD &rarr; Output PSD</span>
+                    </div>
+                    <div class="chart-container"><canvas id="chartPSD" role="img" aria-label="Particle size distribution: Input feed size distribution vs output product size distribution"></canvas></div>
+                    <p class="chart-note">Gold curve: Input Feed Size Distribution (whole beans, mm scale). Green curve: Output Product Size Distribution (calibrated powder, µm scale).</p>
+                </div>
+
+                <div class="card chart-card wide">
+                    <div class="chart-header">
+                        <h3>Bed pressure drop vs. fines content</h3>
+                        <span class="chart-tag">Ergun equation, Sauter diameter</span>
+                    </div>
+                    <div class="chart-container"><canvas id="chartFines" role="img" aria-label="Brew-bed pressure drop rising with fines fraction"></canvas></div>
+                    <p class="chart-note">Curve: screened product blended with increasing amounts of the fines mode. Fines dominate the surface area, so pressure drop climbs steeply.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Method -->
+        <section class="container section" id="method">
+            <div class="section-header">
+                <h2>Method and verification</h2>
+                <p>The governing equations, a live hand-check at your operating point, and what the model does not cover.</p>
+            </div>
+
+            <div class="grid-2">
+                <article class="card">
+                    <h3>Governing equations</h3>
+                    <dl class="eq-list">
+                        <dt>Mill product (per pass)</dt>
+                        <dd class="eq">Q(d) = &phi;<sub>f</sub> &middot; LN(d; 40 µm, &sigma;<sub>g</sub> 1.8) + (1 &minus; &phi;<sub>f</sub>) &middot; [1 &minus; exp(&minus;(d / d<sub>63</sub>)<sup>n</sup>)]</dd>
+                        <dt>Double roll angle of nip & gripping check</dt>
+                        <dd class="eq">cos(&alpha;/2) = (D<sub>R</sub> + s) / (D<sub>R</sub> + D<sub>p</sub>), &nbsp; &mu; &ge; tan(&alpha;/2) &rArr; &alpha; &le; 35.5&deg;</dd>
+                        <dt>Double roll practical capacity</dt>
+                        <dd class="eq">Q<sub>practical</sub> = 60 &pi; D<sub>R</sub> W<sub>R</sub> N s &rho;<sub>bulk</sub> &eta;<sub>v</sub></dd>
+                        <dt>Recycle balance</dt>
+                        <dd class="eq">M = F + R, &nbsp; R = r &middot; M &nbsp;&rArr;&nbsp; M = F / (1 &minus; r)</dd>
+                        <dt>Screen effectiveness</dt>
+                        <dd class="eq">E = E<sub>O</sub> &middot; E<sub>U</sub> = (O x<sub>O</sub> / F x<sub>F</sub>) &middot; (U (1 &minus; x<sub>U</sub>) / F (1 &minus; x<sub>F</sub>))</dd>
+                        <dt>Bond's law (closed circuit, fresh feed basis)</dt>
+                        <dd class="eq">P = ṁ<sub>F</sub> &middot; 10 W<sub>i</sub> (1/&radic;P<sub>80</sub> &minus; 1/&radic;F<sub>80</sub>)</dd>
+                        <dt>Ergun equation (brew bed)</dt>
+                        <dd class="eq">&Delta;P / L = 150 &mu;u (1 &minus; &epsilon;)<sup>2</sup> / (&epsilon;<sup>3</sup> d<sub>32</sub><sup>2</sup>) + 1.75 &rho;u<sup>2</sup> (1 &minus; &epsilon;) / (&epsilon;<sup>3</sup> d<sub>32</sub>)</dd>
+                    </dl>
+                </article>
+
+                <article class="card">
+                    <h3>Hand-check at your operating point</h3>
+                    <p class="muted">Recomputed directly from the equations, then compared with the interpolated dataset value.</p>
+                    <div class="table-responsive">
+                        <table class="check-table">
+                            <thead><tr><th>Step</th><th>Calculation</th><th>Result</th></tr></thead>
+                            <tbody id="check-body"></tbody>
+                        </table>
+                    </div>
+                    <p class="muted small">Off-grid points differ slightly because the site interpolates linearly between simulated cases. <code>coffee_particle_calc.py</code> holds the fixed benchmark (1.1749 kW; screen E = 84.14%).</p>
+                </article>
+            </div>
+
+            <div class="grid-2 method-lower">
+                <article class="card">
+                    <h3>Model parameters</h3>
+                    <div class="table-responsive">
+                        <table class="check-table" id="param-table">
+                            <tbody id="param-body"></tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="card">
+                    <h3>Simulation & Modeling Notes</h3>
+                    <ul class="styled-list">
+                        <li><strong>Aspen Plus V14 Flowsheet Benchmark.</strong> The circuit mass balance and particle classification are validated against the Aspen Plus V14 solids simulation (<code>Coffee_powder.apwz</code>, 12 runs: <code>mix_1..6</code> vs. <code>run_1..6</code>). Closing the oversize recycle loop delivers a +23.8% surge in product yield (42.8% vs. 34.6%).</li>
+                        <li><strong>Material assumptions.</strong> Bond work index <em>W</em><sub>i</sub> = 12.5 kWh/t and moisture fraction (3%) reflect typical roasted coffee bean physical characteristics.</li>
+                        <li><strong>Recycle breakage.</strong> Recycled oversize is modeled as re-breaking to the calibrated product PSD shape without accumulation.</li>
+                        <li><strong>Conventional baseline.</strong> The open-loop grinder baseline is modeled as a broad bimodal PSD representative of commercial batch disc/burr grinders.</li>
+                        <li><strong>Pressure drop is relative.</strong> Ergun equation evaluates clean-bed hydraulic permeability. Real puck tamping and swelling are not dynamically simulated.</li>
+                        <li><strong>Chilled grinding.</strong> The &lt; 28 °C roll jacket temperature is maintained to preserve delicate coffee aromatics.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <!-- Competitors -->
+        <section class="container section" id="competitors">
+            <div class="section-header">
+                <h2>Competitor Benchmarking & Market Positioning</h2>
+                <p>Benchmarking regional players in Indore, Madhya Pradesh, and across India against BrewDz's fluid-particle technology.</p>
+            </div>
+            <div class="card table-card">
+                <div class="table-responsive">
+                    <table class="benchmark-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Base</th>
+                                <th>Category</th>
+                                <th>Typical approach</th>
+                                <th>Limitations / Gap we address</th>
+                                <th>BrewDz Competitive Edge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Kaapi Machines (Mahlkönig)</strong></td>
+                                <td>Bengaluru, pan-India</td>
+                                <td><span class="pill pill-direct">Direct (Equipment)</span></td>
+                                <td>Mahlkönig EK43 / EK Omnia flat burr grinders (98 mm burrs)</td>
+                                <td>Single-pass, open-loop grinding; high CapEx (₹3.5L+); no continuous screening or recycle</td>
+                                <td>Closed-loop modular continuous system with integrated recycle achieving &gt;96% on-spec yield at 40% lower CapEx</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Siolim Specialty Coffee Roasters</strong></td>
+                                <td>Sapna Sangeeta, Indore, MP</td>
+                                <td><span class="pill pill-roaster">Local Roaster (MP)</span></td>
+                                <td>In-house batch retail burr grinders for packaged coffee</td>
+                                <td>15–18% fines causing cold brew filter blinding; manual sifting discard losses</td>
+                                <td>Supplying certified B2B calibrated, narrow-span grounds (Span &le; 0.82) and toll-milling services in Indore</td>
+                            </tr>
+                            <tr>
+                                <td><strong>J P Machine Tools</strong></td>
+                                <td>Sanwer Rd Ind. Area, Indore, MP</td>
+                                <td><span class="pill pill-alt">Alternative (Indore Fabricator)</span></td>
+                                <td>High-speed impact hammer mills & micro-pulverizers</td>
+                                <td>Impact comminution creates severe frictional heat (&gt;55°C) destroying aroma oils; fines &gt;30%</td>
+                                <td>Low-shear chilled roller milling (&lt;28°C) preserving volatile pyrazines with continuous multi-deck classification</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Blue Tokai Coffee Roasters</strong></td>
+                                <td>Gurugram, pan-India</td>
+                                <td><span class="pill pill-direct">Direct (Specialty Roaster)</span></td>
+                                <td>Industrial batch burr grinders (Ditting / Mahlkönig VTA 6S)</td>
+                                <td>Grinding treated as secondary retail packaging; out-of-spec fractions wasted; boulder migration</td>
+                                <td>Engineered OEM powder skids delivering certified aerodynamically de-dusted grounds</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Galaxy Sivtek</strong></td>
+                                <td>Vadodara / Central India</td>
+                                <td><span class="pill pill-alt">Alternative (Screening Only)</span></td>
+                                <td>Sanitary Sivtek® vibro-separators with ultrasonic deblinding</td>
+                                <td>Manufactures only standalone screening units; lacks integrated comminution mill and automated recycle loop</td>
+                                <td>Full turnkey closed-loop comminution-separation plant with automated solids feedback and Ergun bed modeling</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="muted small table-foot">Competitor descriptions benchmarked from field surveys, industrial manufacturer specifications, and ChE 303 project guidelines. BrewDz operational figures are Aspen/Python steady-state model results.</p>
+            </div>
+        </section>
+
+        <!-- Team -->
+        <section class="container section" id="team">
+            <div class="section-header">
+                <h2>Project Team</h2>
+                <p>ChE 303 Fluid Particle Systems · Engineering the Perfect Coffee Powder</p>
+            </div>
+            <div class="team-grid">
+                <div class="card team-card"><span class="team-role">Project Module 01</span><span class="team-name">Process Simulation</span><span class="team-task">Aspen Plus V14 flowsheet, solids circuit modeling, and recycle convergence</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 02</span><span class="team-name">Particle Mechanics</span><span class="team-task">Double Roll Crusher mechanics, Angle of Nip gripping check, and Bond verification</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 03</span><span class="team-name">Interactive Platform</span><span class="team-task">Interactive engineering calculator, dynamic dataset interpolation, and SVG flowsheet</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 04</span><span class="team-name">Market &amp; Systems</span><span class="team-task">Indore competitor benchmarking, packed-bed hydraulics, and technical defense</span></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div>
+                <p><strong>BrewDz Particle Engineering Pvt. Ltd.</strong> (student startup concept)</p>
+                <p>Course project for ChE 303: Fluid Particle Systems</p>
+            </div>
+            <div class="footer-right">
+                <p>Python steady-state circuit model · <span id="footer-cases">399</span> precomputed cases</p>
+                <p>&copy; 2026 BrewDz Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="simulation_data.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
