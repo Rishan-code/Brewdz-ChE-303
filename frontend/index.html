@@ -379,7 +379,7 @@
         <section class="container section" id="aspen">
             <div class="section-header">
                 <h2>Aspen Plus V14 Flowsheet Simulation & Rigorous Solids Balances</h2>
-                <p>Charan's Aspen Plus V14 model (<code>Coffee_powder.apwz</code>) simulating the continuous Roaster-Mixer-Crusher-Screen circuit with steady-state recycle convergence.</p>
+                <p>Industrial flowsheet model (<code>Coffee_powder.apwz</code>) simulating the continuous Roaster-Mixer-Crusher-Screen circuit with steady-state recycle convergence.</p>
             </div>
 
             <div class="grid-2">
@@ -387,24 +387,29 @@
                     <h3>Aspen Circuit Architecture</h3>
                     <p>The solids flowsheet was built in Aspen Plus V14 using the <code>MIXNCPSD</code> stream class to rigorously model non-conventional coffee solids across 30 particle size mesh intervals:</p>
                     <ul class="styled-list">
-                        <li><strong>Feed Conditioning (<code>FEED</code> & <code>ROASTER</code>):</strong> $100\,\text{kg/h}$ total feed ($97\,\text{kg/h}$ coffee solids + $3\,\text{kg/h}$ moisture) enters at $25^\circ\text{C}$ and is roasted up to $210^\circ\text{C}$ at $1.013\,\text{bar}$, flashing moisture into vapor.</li>
-                        <li><strong>Solids Mixing (<code>MIXER</code>):</strong> Fresh roasted coffee merges with recycled screen oversize ($22.5\text{--}23.2\,\text{kg/h}$), loading the crusher at $\approx 120.0\,\text{kg/h}$.</li>
-                        <li><strong>Mechanical Comminution (<code>CRUSHER</code>):</strong> Double roll crushing fractures beans to $d_p < 2087\,\mu\text{m}$.</li>
-                        <li><strong>Multi-Deck Classification (<code>SCREEN</code>):</strong> Generates three calibrated streams:
-                            <ul style="margin-top:0.4rem; padding-left:1rem;">
-                                <li><strong><code>PROD</code>:</strong> $41.5\text{--}42.0\,\text{kg/h}$ on-spec product ($67.4\%$ in $600\text{--}1100\,\mu\text{m}$; $0.00\%$ boulders $>1590\,\mu\text{m}$).</li>
-                                <li><strong><code>FINE</code>:</strong> $55.0\text{--}55.5\,\text{kg/h}$ dust ($100\% < 597\,\mu\text{m}$) for instant coffee soluble extraction.</li>
-                                <li><strong><code>OVERSIZE</code>:</strong> $22.5\text{--}23.2\,\text{kg/h}$ coarse recycle returned to the mixer ($R/F \approx 23.5\%$).</li>
-                            </ul>
-                        </li>
+                        <li><strong>Feed Conditioning (FEED &amp; ROASTER):</strong> 100 kg/h total feed (97 kg/h coffee solids + 3 kg/h moisture) enters at 25 °C and is roasted to 210 °C at 1.013 bar, flashing moisture into vapor and creating a brittle cellular bean matrix.</li>
+                        <li><strong>Solids Mixing (MIXER):</strong> Fresh roasted coffee merges with recycled screen oversize (22.5 to 23.2 kg/h), creating a steady crusher feed of approximately 120.0 kg/h.</li>
+                        <li><strong>Mechanical Comminution (CRUSHER):</strong> Low-shear double roll crushing fractures beans to particle sizes below 2087 µm.</li>
+                        <li><strong>Screen Classification (SCREEN):</strong> A multi-deck vibratory screen separates the crushed grounds into three dedicated streams:</li>
                     </ul>
+                    <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem;">
+                        <div style="background: var(--tint); border-left: 4px solid var(--product); padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.88rem;">
+                            <strong style="color: var(--product);">PROD (Target Product):</strong> 41.5 to 42.0 kg/h on-spec grounds. <strong>67.4%</strong> concentrated in the calibrated 600 to 1100 µm extraction band, with <strong>0.00% boulders</strong> above 1590 µm.
+                        </div>
+                        <div style="background: var(--tint); border-left: 4px solid var(--muted); padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.88rem;">
+                            <strong style="color: var(--muted);">FINE (Undersize Dust):</strong> 55.0 to 55.5 kg/h of super-fines (100% below 597 µm) de-dusted and captured as high-value feed for instant soluble coffee extraction.
+                        </div>
+                        <div style="background: var(--tint); border-left: 4px solid var(--recycle); padding: 0.6rem 0.85rem; border-radius: 6px; font-size: 0.88rem;">
+                            <strong style="color: var(--recycle);">OVERSIZE (Recycle Loop):</strong> 22.5 to 23.2 kg/h coarse particles (1093 to 2087 µm) continuously returned to the mixer (circulating ratio R/F ≈ 23.5%).
+                        </div>
+                    </div>
                 </article>
 
                 <article class="card">
                     <h3>Open-Loop vs. Closed-Loop Aspen Benchmark</h3>
-                    <p>Comparing Charan's open-loop single-pass runs (<code>run_1..6</code>) against closed-loop converged runs with oversize recycle (<code>mix_1..6</code>):</p>
-                    <div class="table-responsive">
-                        <table class="benchmark-table" style="min-width:100%; font-size:0.84rem;">
+                    <p>Quantitative comparison between single-pass open-loop grinding (<code>run_1..6</code>) and closed-loop grinding with oversize recycle (<code>mix_1..6</code>):</p>
+                    <div class="table-responsive" style="margin-top: 0.8rem;">
+                        <table class="benchmark-table" style="min-width: 100%; font-size: 0.84rem;">
                             <thead>
                                 <tr>
                                     <th>Parameter</th>
@@ -453,7 +458,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="muted small" style="margin-top:0.75rem;">Verified across 6 diverse feed particle size distributions ($6.0\,\text{mm}$ to $10.75\,\text{mm}$ whole bean diameter) in Aspen Plus V14.</p>
+                    <p class="muted small" style="margin-top: 0.9rem; padding: 0.55rem 0.8rem; background: var(--tint); border-radius: 6px; line-height: 1.5;">
+                        <strong>Robust Across Feed Variations:</strong> Verified across 6 diverse feed particle size distributions (6.0 mm peaberry to 10.75 mm elephant bean diameter) in Aspen Plus V14.
+                    </p>
                 </article>
             </div>
         </section>
@@ -511,8 +518,8 @@
                 <article class="card">
                     <h3>Simulation & Modeling Notes</h3>
                     <ul class="styled-list">
-                        <li><strong>Aspen Plus V14 Flowsheet Benchmark.</strong> The circuit mass balance and particle classification are validated against Charan's Aspen Plus V14 solids simulation (<code>Coffee_powder.apwz</code>, 12 runs: <code>mix_1..6</code> vs. <code>run_1..6</code>). Closing the oversize recycle loop delivers a +23.8% surge in product yield (42.8% vs. 34.6%).</li>
-                        <li><strong>Material assumptions.</strong> Bond work index $W_i = 12.5\,\text{kWh/t}$ and moisture fraction ($3\%$) reflect typical roasted coffee bean physical characteristics.</li>
+                        <li><strong>Aspen Plus V14 Flowsheet Benchmark.</strong> The circuit mass balance and particle classification are validated against the Aspen Plus V14 solids simulation (<code>Coffee_powder.apwz</code>, 12 runs: <code>mix_1..6</code> vs. <code>run_1..6</code>). Closing the oversize recycle loop delivers a +23.8% surge in product yield (42.8% vs. 34.6%).</li>
+                        <li><strong>Material assumptions.</strong> Bond work index <em>W</em><sub>i</sub> = 12.5 kWh/t and moisture fraction (3%) reflect typical roasted coffee bean physical characteristics.</li>
                         <li><strong>Recycle breakage.</strong> Recycled oversize is modeled as re-breaking to the calibrated product PSD shape without accumulation.</li>
                         <li><strong>Conventional baseline.</strong> The open-loop grinder baseline is modeled as a broad bimodal PSD representative of commercial batch disc/burr grinders.</li>
                         <li><strong>Pressure drop is relative.</strong> Ergun equation evaluates clean-bed hydraulic permeability. Real puck tamping and swelling are not dynamically simulated.</li>
@@ -596,10 +603,10 @@
                 <p>ChE 303 Fluid Particle Systems · Engineering the Perfect Coffee Powder</p>
             </div>
             <div class="team-grid">
-                <div class="card team-card"><span class="team-role">Process simulation lead</span><span class="team-name">Charan</span><span class="team-task">Aspen Plus flowsheet, Solids circuit design, and recycle convergence</span></div>
-                <div class="card team-card"><span class="team-role">Computational modelling lead</span><span class="team-name">Rishan</span><span class="team-task">Double Roll Crusher mechanics (Angle of Nip, capacity, Bond verification)</span></div>
-                <div class="card team-card"><span class="team-role">Web and data lead</span><span class="team-name">Sohil Thakur</span><span class="team-task">Interactive engineering portal, dataset interpolation, and SVG flowsheet</span></div>
-                <div class="card team-card"><span class="team-role">Systems & market lead</span><span class="team-name">ChE 303 Team</span><span class="team-task">Indore competitor benchmarking, Ergun bed hydraulics, and technical defense</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 01</span><span class="team-name">Process Simulation</span><span class="team-task">Aspen Plus V14 flowsheet, solids circuit modeling, and recycle convergence</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 02</span><span class="team-name">Particle Mechanics</span><span class="team-task">Double Roll Crusher mechanics, Angle of Nip gripping check, and Bond verification</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 03</span><span class="team-name">Interactive Platform</span><span class="team-task">Interactive engineering calculator, dynamic dataset interpolation, and SVG flowsheet</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 04</span><span class="team-name">Market &amp; Systems</span><span class="team-task">Indore competitor benchmarking, packed-bed hydraulics, and technical defense</span></div>
             </div>
         </section>
     </main>
