@@ -44,9 +44,10 @@
 
 * **Slide Title:** Upstream Processing & Comminution Mechanics
 * **Subtitle:** Green Bean Conditioning, Pyrolysis Roasting & Controlled Double-Roll Fracture
-* **Visual / Diagram Recommendation:**
-  * **Left:** Stepwise icon flow: Green Bean $\to$ Air De-stoner $\to$ Roaster ($210^\circ\text{C}$, swelling $+70\%$) $\to$ Chilled Quench ($<30^\circ\text{C}$).
-  * **Right:** BrewDz Double Roll Crusher schematic showing roll diameter ($D_R = 300\text{ mm}$), gap ($s = 0.50\text{ mm}$), and the Angle of Nip geometry ($\alpha = 29.8^\circ$), discharging into the vibrating screen.
+* **Ready-to-Insert Slide Visual (300 DPI PNG & Vector SVG):**
+  * PNG: [slide1_upstream_comminution.png](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide1_upstream_comminution.png)
+  * SVG: [slide1_upstream_comminution.svg](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide1_upstream_comminution.svg)
+  * ![Slide 1 Visual](slide_visuals/slide1_upstream_comminution.png)
 
 #### Slide Text & Bullet Points:
 * **1. Raw Green Bean Conditioning:**
@@ -78,9 +79,10 @@
 
 * **Slide Title:** The Process Crossroads: Ground (R&G) vs. Instant Leaching
 * **Subtitle:** Packed-Bed Hydraulics (Ergun Eq.) vs. Pressurized Percolation Battery ($14\text{ bar}$)
-* **Visual / Diagram Recommendation:**
-  * **Top Half (Route A - Ground Coffee):** Schematic of packed coffee bed during water extraction. Contrast: Unscreened bed (fines clogging filter pores, causing channeling and bitter/sour extract) vs. BrewDz screened bed ($600\text{--}1100\,\mu\text{m}$, uniform laminar flow). Followed by nitrogen-flushed pouch with one-way degassing valve.
-  * **Bottom Half (Route B - Instant Extraction):** 6-column counter-current percolation battery showing dual-temperature extraction: Atmospheric cells ($100^\circ\text{C}$) $\to$ Thermal hydrolysis cells ($180^\circ\text{C}, 14\text{ bar}$).
+* **Ready-to-Insert Slide Visual (300 DPI PNG & Vector SVG):**
+  * PNG: [slide2_process_divergence.png](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide2_process_divergence.png)
+  * SVG: [slide2_process_divergence.svg](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide2_process_divergence.svg)
+  * ![Slide 2 Visual](slide_visuals/slide2_process_divergence.png)
 
 #### Slide Text & Bullet Points:
 * **The Core Chemical Engineering Boundary:**
@@ -112,10 +114,10 @@
 
 * **Slide Title:** Dehydration, Agglomeration & Zero-Waste Circuit Synthesis
 * **Subtitle:** Spray vs. Freeze Drying, Capillary Instantization & 100% Mass Balance Closure
-* **Visual / Diagram Recommendation:**
-  * **Left:** Downstream schematic: Leached Extract $\to$ Vacuum Aroma Stripper $\to$ Centrifuge ($7000\times g$) $\to$ 3-Effect Evaporator ($40\%$ solids) $\to$ Dehydration (Spray Tower vs. Freeze Tunnel).
-  * **Center:** Microscopic comparison of Agglomeration: Hydrophobic dust clump ("fish-eye") vs. Porous agglomerate drawing in water via Washburn capillary suction.
-  * **Right:** Aspen Plus Validated Mass Balance block diagram: $100\text{ kg/h Feed} \to 42\text{ kg/h PROD} + 55\text{ kg/h FINE} + 23\text{ kg/h Recycle}$.
+* **Ready-to-Insert Slide Visual (300 DPI PNG & Vector SVG):**
+  * PNG: [slide3_dehydration_mass_balance.png](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide3_dehydration_mass_balance.png)
+  * SVG: [slide3_dehydration_mass_balance.svg](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide3_dehydration_mass_balance.svg)
+  * ![Slide 3 Visual](slide_visuals/slide3_dehydration_mass_balance.png)
 
 #### Slide Text & Bullet Points:
 * **1. Extract Clarification & Evaporative Concentration:**
