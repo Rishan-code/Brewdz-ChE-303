@@ -1,15 +1,14 @@
 # Aspen Plus V14 Solids Flowsheet Simulation Report
 **Course:** ChE 303: Fluid Particle Systems  
 **Project:** Engineering the Perfect Coffee Powder (BrewDz Particle Engineering Pvt. Ltd.)  
-**Simulation Lead:** Charan  
-**Computational & Validation Lead:** Rishan  
+**Simulation Team:** Process Simulation Lead & Computational Validation Lead  
 **Software Environment:** Aspen Plus V14 (`Coffee_powder.apwz` / `Coffee_powder$backup.bkp`)  
 
 ---
 
 ## 1. Flowsheet Architecture & Process Concept
 
-The Aspen Plus V14 simulation developed by Charan models the complete closed-loop comminution, roasting, and multi-deck screening circuit for specialty coffee processing.
+The Aspen Plus V14 simulation models the complete closed-loop comminution, roasting, and multi-deck screening circuit for specialty coffee processing.
 
 ```mermaid
 flowchart LR
@@ -82,7 +81,7 @@ From the verified Aspen Plus input masks:
 
 ## 3. Parametric Analysis: Open-Loop vs. Closed-Loop
 
-Charan evaluated 6 feed PSD profiles across two operational regimes:
+The engineering team evaluated 6 feed PSD profiles across two operational regimes:
 1. **Open-Loop Runs (`run_1` to `run_6`):** Single-pass crushing without recycle feedback.
 2. **Closed-Loop Runs (`mix_1` to `mix_6`):** Steady-state recycle loop converging with $R/F \approx 23.5\%$.
 

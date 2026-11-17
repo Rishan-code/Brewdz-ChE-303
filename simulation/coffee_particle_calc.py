@@ -392,7 +392,7 @@ def run_hand_verification_benchmark():
     # VERIFICATION 4: FEED PSD -> PRODUCT PSD TRANSFORMATION
     # -------------------------------------------------------------------------
     psd_res = crusher.transform_psd(feed_rate_kgh=200.0, feed_d50_um=6500.0, feed_span=0.85, roll_gap_mm=0.50)
-    print("\n[VERIFICATION 4] Feed PSD -> Product PSD Transformation (Charan's Requirement)")
+    print("\n[VERIFICATION 4] Feed PSD -> Product PSD Transformation (Aspen Validation)")
     print("-" * 80)
     print(f"Inputs: Feed Rate = 200 kg/h, Feed d50 = 6500 µm, Roll Gap = 0.50 mm")
     print(f"Outputs:")

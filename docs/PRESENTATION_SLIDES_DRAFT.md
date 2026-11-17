@@ -129,3 +129,10 @@
 3. **Q: What is the fluid particle relevance of the Ergun equation in your project?**  
    *A:* Coffee brewing is flow through a packed porous bed. The Ergun equation shows that pressure drop is inversely proportional to $d_p^2$ in the viscous regime. Fines dramatically spike $\Delta P$, causing filter blinding and localized channel flow, which destroys extraction consistency.
 
+---
+
+## ☕ Dedicated Presentation & Study Resources for Part 2: Coffee Making Process
+For an exhaustive slide-by-slide technical defense deck and study guide comparing Ground Coffee (Route A) and Instant Soluble Coffee (Route B):
+- **Slide Deck:** [docs/PART_2_PRESENTATION_SLIDES.md](file:///d:/Desktop/Brewdz-Che-303/docs/PART_2_PRESENTATION_SLIDES.md) (10 dedicated presentation slides with speaker notes and defense Q&A).
+- **Technical Study Guide:** [docs/PART_2_COFFEE_MAKING_PROCESS.md](file:///d:/Desktop/Brewdz-Che-303/docs/PART_2_COFFEE_MAKING_PROCESS.md) (Full chemical engineering dossier covering roasting kinetics, extraction percolation batteries, evaporation, spray vs freeze drying, and agglomeration).
+

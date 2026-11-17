@@ -27,7 +27,7 @@ Brewdz-ChE-303/
 ├── README.md                         # Complete project documentation & setup
 ├── index.html                        # GitHub Pages root redirect to frontend/
 │
-├── Aspen/                            # Aspen Plus V14 Raw Simulation Results (Charan's Runs)
+├── Aspen/                            # Aspen Plus V14 Raw Simulation Results (mix_1..6 & run_1..6)
 │   ├── run_1.xlsx ... run_6.xlsx     # Open-loop single-pass grinding cases
 │   └── mix_1.xlsx ... mix_6.xlsx     # Closed-loop converged cases with oversize recycle
 │
@@ -104,9 +104,9 @@ See [docs/PRESENTATION_SLIDES_DRAFT.md](docs/PRESENTATION_SLIDES_DRAFT.md) for c
 
 ---
 
-## 👥 Authors
-* **Charan:** Process Simulation Lead (*Aspen Plus Flowsheet, Solids Circuit Design, Recycle Convergence*)
-* **Rishan:** Computational Modelling Lead (*Double Roll Crusher Mechanics, Angle of Nip, Bond Verification*)
-* **Sohil Thakur:** Web & Data Lead (*Interactive Engineering Portal, Simulation Dataset Interpolation, SVG Flowsheet*)
-* **ChE 303 Team:** Systems & Market Analysis (*Indore Competitor Benchmarking, Ergun Bed Hydraulics, Technical Defense*)
+## 👥 Engineering Team Roles
+* **Process Simulation Lead:** Aspen Plus Flowsheet, Solids Circuit Design, Recycle Convergence
+* **Computational Modelling Lead:** Double Roll Crusher Mechanics, Angle of Nip, Bond Verification
+* **Web & Data Lead:** Interactive Engineering Portal, Simulation Dataset Interpolation, SVG Flowsheet
+* **Systems & Market Analysis Lead:** Indore Competitor Benchmarking, Ergun Bed Hydraulics, Technical Defense
 
