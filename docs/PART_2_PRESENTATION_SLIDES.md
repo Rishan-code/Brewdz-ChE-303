@@ -114,3 +114,31 @@
    * *A:* Spray drying uses hot air, which is fast and cheap, but some delicate coffee aroma evaporates away. Freeze drying freezes the brewed coffee and removes ice gently under vacuum—it takes much more time and energy, so it costs more, but preserves far more real coffee aroma.
 4. **Q: Why can't you just dissolve ground coffee directly in water like instant coffee?**
    * *A:* Ground coffee is made of solid roasted plant cell walls (cellulose), which don't dissolve in water. Instant coffee has already had all the insoluble solids filtered out at the factory—only the water-soluble coffee essence is left in the jar!
+
+---
+
+## BONUS SLIDE: Competitor Study & Market Differentiation (Table Slide)
+
+* **Ready-to-Insert Visual (16:9 HD PNG & SVG):**
+  * PNG: [slide_competitor_study.png](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide_competitor_study.png)
+  * SVG: [slide_competitor_study.svg](file:///d:/Desktop/Brewdz-Che-303/docs/slide_visuals/slide_competitor_study.svg)
+  * ![Competitor Study Slide](slide_visuals/slide_competitor_study.png)
+
+### Comparison Table (Copy-Paste Version for PowerPoint / Canva)
+
+| Company & Location | Category | Current Offering / Tech | Key Limitation / Gap | How BrewDz Differentiates |
+| :--- | :--- | :--- | :--- | :--- |
+| **Kaapi Machines India**<br>Bengaluru · Pan-India<br>[kaapimachines.com](https://kaapimachines.com/) | **Direct Competitor** | Imported Mahlkönig & Ditting commercial flat-burr grinders (batch / single-pass) | Open-loop (no recycle); very high cost (₹3L–₹15L/unit); low continuous throughput | Indigenous closed-loop system at ~40% lower CapEx with continuous 50–500 kg/h output |
+| **Siolim Specialty Coffee**<br>Indore, Madhya Pradesh<br>[siolim.coffee](https://siolim.coffee/) | **Local Indirect / Customer** | Indore specialty roastery & pre-ground coffee pouches (retail commercial burrs) | 14–18% fines clog cold brew; manual hand-sifting wastes 15–20% of pricey coffee | B2B toll-grinding or compact unit delivering narrow-span grounds with zero manual sifting waste |
+| **J P Machine Tools**<br>Sanwer Rd, Indore, MP<br>[indiamart.com](https://www.indiamart.com/) | **Alternative Solution** | Local industrial hammer mills & pin pulverizers for bulk food grains & coffee | Violent impact heats beans >55°C (burns aroma oils) & creates >30% excessive fine dust | Low-shear chilled double-roll crushing (<28°C) preserves aroma & cuts fine dust by >60% |
+| **Blue Tokai Roasters**<br>Gurugram · Pan-India<br>[bluetokaicoffee.com](https://bluetokaicoffee.com/) | **Direct (Packaged)** | National specialty coffee brand selling custom-ground retail pouches (burr mill banks) | Grinding is open-loop only; no inline classification, so boulders & fines still reach cups | Automated multi-deck screen + oversize recycle removes 100% boulders for uniform extraction |
+| **Galaxy Sivtek Pvt. Ltd.**<br>Vadodara, Gujarat<br>[galaxysivtek.com](https://galaxysivtek.com/) | **Alternative Solution** | Sanitary circular vibro-sifters & ultrasonic deblinding industrial screens | Standalone screening only — no integrated crusher/mill or recycle control loop | Turnkey unified skid combining chilled roll crushing + screening + automated oversize recycle |
+
+### Natural Speaker Script (~1.5 minutes):
+> *"Next, let's look at the competitor landscape across Indore and India. We benchmarked five real players—spanning both direct competitors and alternative solutions—and found a clear market gap.*
+> 
+> *On the equipment side, **Kaapi Machines** imports German Mahlkönig and Swiss Ditting grinders. They are great for cafés, but they cost 3 to 15 lakh rupees per unit, run in small open-loop batches, and have zero oversize recycle. On the local Indore industrial side, fabricators like **J P Machine Tools** on Sanwer Road build cheap bulk hammer mills—but high-speed impact heats the beans past 55 degrees Celsius, burning off aroma oils and turning over 30 percent of the coffee into dust.*
+> 
+> *Meanwhile, specialty roasters like **Siolim** right here in Indore and **Blue Tokai** nationally sell pre-ground coffee using open-loop burr mills, where fines clog filters and manual sifting wastes expensive coffee. Finally, companies like **Galaxy Sivtek** make great industrial screens, but they only sell standalone sifters—not an integrated grinding and recycle circuit.*
+> 
+> ***BrewDz fills this exact gap:** we offer an affordable, turnkey closed-loop chilled roller mill and vibrating screen skid sized for Indian roasters—keeping grinding cool below 28 degrees, eliminating boulders via recycle, and turning zero coffee into waste."*
