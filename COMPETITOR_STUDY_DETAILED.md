@@ -171,3 +171,4 @@ From the standpoint of **Fluid Particle Systems (ChE 303)**, BrewDz delivers 4 c
   * **Alternative Fabricators (Sanwer Road Industrial Area):** High-speed hammer pulverizers heat coffee above $55^\circ\text{C}$ and generate $>30\%$ fines, destroying aroma and extraction quality.
   * **Specialized Separation (Galaxy Sivtek):** Excellent sanitary vibrating screens, but lacks integrated comminution and automated recycle circuitry.
   * **BrewDz Value Proposition:** An integrated, chilled roller-milling and vibratory screening skid with automated recycle—yielding $>96\%$ on-spec powder with an ultra-narrow span ($\text{Span} \le 0.85$) at $40\%$ lower CapEx.
+

@@ -410,6 +410,30 @@ input[type="range"] {
     border-color: var(--brand-crema);
 }
 
+.preset-btn {
+    flex: 1;
+    background: #0F172A;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+    border-color: var(--brand-crema);
+    color: var(--text-primary);
+}
+
+.preset-btn.active {
+    background: rgba(212, 163, 115, 0.2);
+    border-color: var(--brand-crema);
+    color: var(--brand-crema);
+}
+
 .calc-note {
     background: rgba(15, 23, 42, 0.6);
     border-left: 3px solid var(--brand-warning);

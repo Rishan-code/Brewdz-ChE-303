@@ -209,85 +209,134 @@
     <!-- Interactive Process Calculator & Simulation Retrieval -->
     <section class="container section" id="calculator">
         <div class="section-header">
-            <h2>Interactive Process & Comminution Calculator</h2>
-            <p>Dynamically retrieves precomputed Aspen simulation points and solves Bond's Law & the Ergun Equation in real-time.</p>
+            <h2>Double Roll Crusher: Feed-to-Product PSD Calculator</h2>
+            <p>Input bean mass flow rate and feed size distribution to calculate crushed product size distribution and equipment performance.</p>
         </div>
 
         <div class="calc-grid">
             <!-- Controls Panel -->
             <div class="calc-card inputs-card">
-                <h3>Operating Conditions</h3>
+                <h3>Operating Input Parameters</h3>
+                
+                <!-- Input 1: Mass Flow Rate -->
                 <div class="input-group">
                     <div class="slider-header">
-                        <label for="input-feed-rate">Fresh Bean Feed Rate (kg/h):</label>
-                        <span class="slider-val" id="val-feed-rate">250 kg/h</span>
+                        <label for="input-feed-rate"><strong>1. Bean Mass Flow Rate (&dot;m):</strong></label>
+                        <span class="slider-val" id="val-feed-rate">200 kg/h</span>
                     </div>
-                    <input type="range" id="input-feed-rate" min="50" max="500" step="25" value="250">
+                    <input type="range" id="input-feed-rate" min="50" max="500" step="25" value="200">
                     <div class="range-bounds">
-                        <span>50 kg/h (Pilot)</span>
-                        <span>500 kg/h (Commercial)</span>
+                        <span>50 kg/h (Pilot Scale)</span>
+                        <span>500 kg/h (Commercial Scale)</span>
                     </div>
                 </div>
 
-                <div class="input-group">
-                    <label for="select-grind-profile">Target Brewing Grind Profile:</label>
-                    <select id="select-grind-profile" class="styled-select">
-                        <option value="Espresso">Espresso (Target d50 = 250 µm | Roller Gap = 0.25 mm)</option>
-                        <option value="Drip_PourOver" selected>Drip / Pour-Over (Target d50 = 550 µm | Roller Gap = 0.55 mm)</option>
-                        <option value="FrenchPress_ColdBrew">French Press / Cold Brew (Target d50 = 950 µm | Roller Gap = 0.95 mm)</option>
-                    </select>
-                </div>
-
+                <!-- Input 2: Feed Size Distribution (Bean Median Diameter) -->
                 <div class="input-group">
                     <div class="slider-header">
-                        <label for="input-screen-mesh">Screen Aperture Cut-Size (µm):</label>
-                        <span class="slider-val" id="val-screen-mesh">700 µm</span>
+                        <label for="input-feed-d50"><strong>2. Feed Bean Median Size (d50):</strong></label>
+                        <span class="slider-val" id="val-feed-d50">6.50 mm (6500 µm)</span>
                     </div>
-                    <input type="range" id="input-screen-mesh" min="300" max="1300" step="50" value="700">
+                    <input type="range" id="input-feed-d50" min="5.0" max="8.0" step="0.25" value="6.5">
                     <div class="range-bounds">
-                        <span>300 µm (Fine Mesh)</span>
-                        <span>1300 µm (Coarse Mesh)</span>
+                        <span>5.0 mm (Peaberry / Small)</span>
+                        <span>8.0 mm (Screen 19 Jumbo)</span>
+                    </div>
+                </div>
+
+                <!-- Input 3: Feed Size Spread / Uniformity -->
+                <div class="input-group">
+                    <div class="slider-header">
+                        <label for="input-feed-span"><strong>3. Feed Bean Size Span:</strong></label>
+                        <span class="slider-val" id="val-feed-span">0.85 (Graded)</span>
+                    </div>
+                    <input type="range" id="input-feed-span" min="0.5" max="1.3" step="0.05" value="0.85">
+                    <div class="range-bounds">
+                        <span>0.50 (Strictly Graded)</span>
+                        <span>1.30 (Ungraded / Broad)</span>
+                    </div>
+                </div>
+
+                <!-- Input 4: Double Roll Crusher Gap -->
+                <div class="input-group">
+                    <div class="slider-header">
+                        <label for="input-roll-gap"><strong>4. Double Roll Crusher Gap (s):</strong></label>
+                        <span class="slider-val" id="val-roll-gap">0.50 mm (500 µm)</span>
+                    </div>
+                    <input type="range" id="input-roll-gap" min="0.20" max="1.20" step="0.05" value="0.50">
+                    <div class="range-bounds">
+                        <span>0.20 mm (Espresso)</span>
+                        <span>0.50 mm (Drip)</span>
+                        <span>1.20 mm (Cold Brew)</span>
+                    </div>
+                </div>
+
+                <!-- Quick Profile Buttons -->
+                <div class="input-group">
+                    <label>Brewing Target Presets:</label>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.4rem;">
+                        <button type="button" class="preset-btn" onclick="applyPreset('Espresso')">Espresso (0.25mm)</button>
+                        <button type="button" class="preset-btn active" onclick="applyPreset('Drip')">Drip Filter (0.55mm)</button>
+                        <button type="button" class="preset-btn" onclick="applyPreset('ColdBrew')">Cold Brew (0.95mm)</button>
                     </div>
                 </div>
 
                 <div class="calc-note">
-                    <strong>Model Mechanics:</strong> Inputs trigger real-time interpolation of the 57 Aspen simulation cases from <code>simulation_dataset.csv</code> and evaluate equipment performance.
+                    <strong>Governing Equations:</strong> Double Roll Angle of Nip ($\cos\theta = \frac{D_R + s}{D_R + D_p}$), Capacity ($Q = 60\pi D_R W_R N s \rho \eta$), and Bond's Comminution Law.
                 </div>
             </div>
 
             <!-- Calculated Outputs Panel -->
             <div class="calc-card outputs-card">
-                <h3>Aspen Simulation & Equipment Results</h3>
+                <h3>Calculated Product Size Distribution & Machine Metrics</h3>
                 
                 <div class="results-grid">
+                    <!-- Core Output: Product Size Distribution Percentiles -->
                     <div class="result-box highlight">
-                        <span class="res-label">Mill Comminution Power (Bond's Law)</span>
-                        <div class="res-num" id="out-power">1.17 kW</div>
-                        <span class="res-sub" id="out-spec-energy">0.0034 kWh/kg</span>
+                        <span class="res-label">Product Median Size (d50)</span>
+                        <div class="res-num" id="out-prod-d50">360 µm</div>
+                        <span class="res-sub" id="out-prod-d80">d80: 575 µm | d90: 615 µm</span>
                     </div>
 
-                    <div class="result-box">
-                        <span class="res-label">Steady-State Recycle Rate</span>
-                        <div class="res-num" id="out-recycle">52.8 kg/h</div>
-                        <span class="res-sub" id="out-recycle-ratio">Recycle Ratio (R): 0.211</span>
+                    <div class="result-box highlight">
+                        <span class="res-label">Product PSD Span</span>
+                        <div class="res-num" id="out-prod-span">1.13</div>
+                        <span class="res-sub" id="out-fines-summary">Fines (&lt;100 µm): &lt; 0.5%</span>
                     </div>
 
+                    <!-- Double Roll Crusher Angle of Nip -->
                     <div class="result-box">
-                        <span class="res-label">On-Spec Product Recovery</span>
+                        <span class="res-label">Double Roll Angle of Nip (&alpha;)</span>
+                        <div class="res-num" id="out-nip-angle">24.8°</div>
+                        <span class="res-sub" id="out-nip-status" style="color: #34D399; font-weight: 600;">✓ PASS (Gripped without slip: &le; 35.5°)</span>
+                    </div>
+
+                    <!-- Comminution Power -->
+                    <div class="result-box">
+                        <span class="res-label">Crusher Power (Bond's Law)</span>
+                        <div class="res-num" id="out-power">0.77 kW</div>
+                        <span class="res-sub" id="out-spec-energy">Specific: 0.0038 kWh/kg</span>
+                    </div>
+
+                    <!-- Throughput & Practical Capacity -->
+                    <div class="result-box">
+                        <span class="res-label">Practical Capacity Limit</span>
+                        <div class="res-num" id="out-capacity">174 kg/h</div>
+                        <span class="res-sub" id="out-load-status">Load: 115% of rated capacity</span>
+                    </div>
+
+                    <!-- Steady-State Recycle & Yield -->
+                    <div class="result-box">
+                        <span class="res-label">Closed-Loop Product Yield</span>
                         <div class="res-num" id="out-yield">98.8%</div>
-                        <span class="res-sub" id="out-loss">Mass Loss: &lt; 1.2%</span>
+                        <span class="res-sub">Oversize recycle eliminates waste</span>
                     </div>
 
-                    <div class="result-box">
-                        <span class="res-label">Fines Fraction (&lt; 100 µm)</span>
-                        <div class="res-num" id="out-fines">3.2%</div>
-                        <span class="res-sub">Reduced by 65% vs Standard</span>
-                    </div>
-
+                    <!-- Ergun Bed Pressure Drop -->
                     <div class="result-box full-width">
-                        <span class="res-label">Coffee Bed Extraction Hydraulic Pressure Drop (Ergun Equation)</span>
-                        <div class="res-num" id="out-ergun">0.03 kPa</div>
-                        <span class="res-sub">Controlled permeability prevents channeling and filter media clogging</span>
+                        <span class="res-label">Extraction Bed Percolation Pressure Drop (Ergun Eq.)</span>
+                        <div class="res-num" id="out-ergun">0.08 kPa</div>
+                        <span class="res-sub">Uniform bed permeability guarantees smooth water flow without micro-channeling</span>
                     </div>
                 </div>
             </div>
@@ -297,28 +346,34 @@
     <!-- Interactive Data Visualizations -->
     <section class="container section" id="plots">
         <div class="section-header">
-            <h2>Process Performance & Particle Distributions</h2>
-            <p>Visualizing Aspen parametric sweep curves and particle size distribution (PSD) improvements.</p>
+            <h2>Particle Size Distribution (PSD) & Comminution Plots</h2>
+            <p>Real-time visual comparison of Feed Bean Size Distribution vs. Crushed Product Size Distribution.</p>
         </div>
 
         <div class="grid-2">
-            <!-- Chart 1: Power vs Feed Rate -->
+            <!-- Chart 1: Feed PSD vs Product PSD -->
             <div class="card chart-card">
                 <div class="chart-header">
-                    <h3>Power Consumption vs. Feed Rate</h3>
-                    <span class="chart-tag">Aspen + Bond's Law</span>
+                    <h3>Feed Size Distribution &rarr; Product Size Distribution</h3>
+                    <span class="chart-tag">Charan's PSD Model</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartPSD"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Power vs Feed Rate across Roll Gaps -->
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <h3>Double Roll Crusher Power vs. Feed Rate</h3>
+                    <span class="chart-tag">Bond's Law Verification</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="chartPowerFeed"></canvas>
                 </div>
             </div>
-
-            <!-- Chart 2: Particle Size Distribution Comparison -->
-            <div class="card chart-card">
-                <div class="chart-header">
-                    <h3>Particle Size Distribution (PSD) Comparison</h3>
-                    <span class="chart-tag">Fluid Mechanics Target</span>
-                </div>
+        </div>
+    </section>
                 <div class="chart-container">
                     <canvas id="chartPSD"></canvas>
                 </div>
