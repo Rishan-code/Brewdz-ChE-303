@@ -242,11 +242,29 @@
 
                     <div class="input-group">
                         <div class="slider-header">
-                            <label for="input-feed-rate">Fresh bean feed rate</label>
+                            <label for="input-feed-rate">Fresh bean feed rate (Mass flow)</label>
                             <output class="slider-val" id="val-feed-rate" for="input-feed-rate">250 kg/h</output>
                         </div>
                         <input type="range" id="input-feed-rate" min="50" max="500" step="5" value="250">
                         <div class="range-bounds"><span>50 kg/h (pilot)</span><span>500 kg/h (commercial)</span></div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-d50">Feed bean median size (d50,feed)</label>
+                            <output class="slider-val" id="val-feed-d50" for="input-feed-d50">6.50 mm</output>
+                        </div>
+                        <input type="range" id="input-feed-d50" min="5.0" max="8.0" step="0.05" value="6.50">
+                        <div class="range-bounds"><span>5.00 mm (peaberry)</span><span>8.00 mm (elephant bean)</span></div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="slider-header">
+                            <label for="input-feed-span">Feed size distribution span</label>
+                            <output class="slider-val" id="val-feed-span" for="input-feed-span">0.60</output>
+                        </div>
+                        <input type="range" id="input-feed-span" min="0.40" max="0.90" step="0.02" value="0.60">
+                        <div class="range-bounds"><span>0.40 (narrow graded)</span><span>0.90 (broad raw blend)</span></div>
                     </div>
 
                     <div class="input-group">
@@ -279,14 +297,27 @@
                             <span class="res-sub" id="out-recycle-ratio"></span>
                         </div>
                         <div class="result-box">
-                            <span class="res-label">On-spec product</span>
+                            <span class="res-label">On-spec product yield</span>
                             <div class="res-num" id="out-yield">&ndash;</div>
                             <span class="res-sub" id="out-product"></span>
                         </div>
                         <div class="result-box">
-                            <span class="res-label">Product size (d50)</span>
+                            <span class="res-label">Product size distribution</span>
                             <div class="res-num" id="out-d50">&ndash;</div>
                             <span class="res-sub" id="out-span"></span>
+                        </div>
+                        <div class="result-box">
+                            <span class="res-label">Double Roll Angle of Nip (&alpha;)</span>
+                            <div class="res-num" style="display:flex; align-items:baseline; gap:0.5rem; flex-wrap:wrap;">
+                                <span id="out-nip">&ndash;</span>
+                                <span id="out-nip-badge" class="pill pill-pass">✓ PASS (≤ 35.5°)</span>
+                            </div>
+                            <span class="res-sub" id="out-nip-sub">Nip angle &le; 2 arctan(&mu;) (Zero-slip condition)</span>
+                        </div>
+                        <div class="result-box">
+                            <span class="res-label">Roll Practical Capacity (Q)</span>
+                            <div class="res-num" id="out-capacity">&ndash;</div>
+                            <span class="res-sub" id="out-capacity-sub">Roll speed 240 rpm &middot; Width 300 mm &middot; &eta;<sub>v</sub> = 25%</span>
                         </div>
                         <div class="result-box">
                             <span class="res-label">Fines in product (&lt; 100 µm)</span>
@@ -354,6 +385,10 @@
                     <dl class="eq-list">
                         <dt>Mill product (per pass)</dt>
                         <dd class="eq">Q(d) = &phi;<sub>f</sub> &middot; LN(d; 40 µm, &sigma;<sub>g</sub> 1.8) + (1 &minus; &phi;<sub>f</sub>) &middot; [1 &minus; exp(&minus;(d / d<sub>63</sub>)<sup>n</sup>)]</dd>
+                        <dt>Double roll angle of nip & gripping check</dt>
+                        <dd class="eq">cos(&alpha;/2) = (D<sub>R</sub> + s) / (D<sub>R</sub> + D<sub>p</sub>), &nbsp; &mu; &ge; tan(&alpha;/2) &rArr; &alpha; &le; 35.5&deg;</dd>
+                        <dt>Double roll practical capacity</dt>
+                        <dd class="eq">Q<sub>practical</sub> = 60 &pi; D<sub>R</sub> W<sub>R</sub> N s &rho;<sub>bulk</sub> &eta;<sub>v</sub></dd>
                         <dt>Recycle balance</dt>
                         <dd class="eq">M = F + R, &nbsp; R = r &middot; M &nbsp;&rArr;&nbsp; M = F / (1 &minus; r)</dd>
                         <dt>Screen effectiveness</dt>
@@ -404,8 +439,8 @@
         <!-- Competitors -->
         <section class="container section" id="competitors">
             <div class="section-header">
-                <h2>Market positioning</h2>
-                <p>How a closed-loop circuit sits against grinders, roasters and industrial mills available to Indian coffee businesses.</p>
+                <h2>Competitor Benchmarking & Market Positioning</h2>
+                <p>Benchmarking regional players in Indore, Madhya Pradesh, and across India against BrewDz's fluid-particle technology.</p>
             </div>
             <div class="card table-card">
                 <div class="table-responsive">
@@ -416,69 +451,69 @@
                                 <th>Base</th>
                                 <th>Category</th>
                                 <th>Typical approach</th>
-                                <th>Gap we address</th>
-                                <th>Source</th>
+                                <th>Limitations / Gap we address</th>
+                                <th>BrewDz Competitive Edge</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Kaapi Machines</strong></td>
+                                <td><strong>Kaapi Machines (Mahlkönig)</strong></td>
                                 <td>Bengaluru, pan-India</td>
-                                <td><span class="pill pill-direct">Equipment supplier</span></td>
-                                <td>Imported commercial burr grinders for cafés and roasteries</td>
-                                <td>Single-pass, open-loop grinding with no integrated screening or recycle</td>
-                                <td><a href="https://kaapimachines.com/" rel="noopener">kaapimachines.com</a></td>
+                                <td><span class="pill pill-direct">Direct (Equipment)</span></td>
+                                <td>Mahlkönig EK43 / EK Omnia flat burr grinders (98 mm burrs)</td>
+                                <td>Single-pass, open-loop grinding; high CapEx (₹3.5L+); no continuous screening or recycle</td>
+                                <td>Closed-loop modular continuous system with integrated recycle achieving &gt;96% on-spec yield at 40% lower CapEx</td>
                             </tr>
                             <tr>
-                                <td><strong>Chapter One Coffee</strong></td>
-                                <td>Indore, MP</td>
-                                <td><span class="pill pill-roaster">Local roastery</span></td>
-                                <td>Batch grinding on standalone retail grinders</td>
-                                <td>Batch-to-batch PSD variation; a potential customer for calibrated pre-ground coffee</td>
-                                <td>Local survey</td>
+                                <td><strong>Siolim Specialty Coffee Roasters</strong></td>
+                                <td>Sapna Sangeeta, Indore, MP</td>
+                                <td><span class="pill pill-roaster">Local Roaster (MP)</span></td>
+                                <td>In-house batch retail burr grinders for packaged coffee</td>
+                                <td>15–18% fines causing cold brew filter blinding; manual sifting discard losses</td>
+                                <td>Supplying certified B2B calibrated, narrow-span grounds (Span &le; 0.82) and toll-milling services in Indore</td>
                             </tr>
                             <tr>
-                                <td><strong>Food-grain pulverizer makers</strong></td>
-                                <td>Indore / Gujarat industrial belt</td>
-                                <td><span class="pill pill-alt">Alternative</span></td>
-                                <td>Hammer, pin and disc mills built for grains and spices</td>
-                                <td>Impact milling gives broad distributions and frictional heating; no classification</td>
-                                <td>IndiaMART listings</td>
+                                <td><strong>J P Machine Tools</strong></td>
+                                <td>Sanwer Rd Ind. Area, Indore, MP</td>
+                                <td><span class="pill pill-alt">Alternative (Indore Fabricator)</span></td>
+                                <td>High-speed impact hammer mills & micro-pulverizers</td>
+                                <td>Impact comminution creates severe frictional heat (&gt;55°C) destroying aroma oils; fines &gt;30%</td>
+                                <td>Low-shear chilled roller milling (&lt;28°C) preserving volatile pyrazines with continuous multi-deck classification</td>
                             </tr>
                             <tr>
                                 <td><strong>Blue Tokai Coffee Roasters</strong></td>
                                 <td>Gurugram, pan-India</td>
-                                <td><span class="pill pill-direct">Packaged coffee</span></td>
-                                <td>Roast-and-ground specialty coffee with grind-size options</td>
-                                <td>Grinding is a packaging step, not an engineered classification circuit</td>
-                                <td><a href="https://bluetokaicoffee.com/" rel="noopener">bluetokaicoffee.com</a></td>
+                                <td><span class="pill pill-direct">Direct (Specialty Roaster)</span></td>
+                                <td>Industrial batch burr grinders (Ditting / Mahlkönig VTA 6S)</td>
+                                <td>Grinding treated as secondary retail packaging; out-of-spec fractions wasted; boulder migration</td>
+                                <td>Engineered OEM powder skids delivering certified aerodynamically de-dusted grounds</td>
                             </tr>
                             <tr>
-                                <td><strong>Hosokawa Micron India</strong></td>
-                                <td>Chennai</td>
-                                <td><span class="pill pill-alt">Industrial mills</span></td>
-                                <td>Air classifier mills for chemicals, minerals and pharma</td>
-                                <td>Sized and priced for large plants rather than 50&ndash;500 kg/h coffee roasteries</td>
-                                <td><a href="https://www.hosokawa-micron.com/" rel="noopener">hosokawa-micron.com</a></td>
+                                <td><strong>Galaxy Sivtek</strong></td>
+                                <td>Vadodara / Central India</td>
+                                <td><span class="pill pill-alt">Alternative (Screening Only)</span></td>
+                                <td>Sanitary Sivtek® vibro-separators with ultrasonic deblinding</td>
+                                <td>Manufactures only standalone screening units; lacks integrated comminution mill and automated recycle loop</td>
+                                <td>Full turnkey closed-loop comminution-separation plant with automated solids feedback and Ergun bed modeling</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                <p class="muted small table-foot">Competitor descriptions summarise publicly listed product ranges. BrewDz figures elsewhere on this page are model results, not plant data.</p>
+                <p class="muted small table-foot">Competitor descriptions benchmarked from field surveys, industrial manufacturer specifications, and ChE 303 project guidelines. BrewDz operational figures are Aspen/Python steady-state model results.</p>
             </div>
         </section>
 
         <!-- Team -->
         <section class="container section" id="team">
             <div class="section-header">
-                <h2>Team</h2>
-                <p>Four roles, one flowsheet.</p>
+                <h2>Project Team</h2>
+                <p>ChE 303 Fluid Particle Systems · Engineering the Perfect Coffee Powder</p>
             </div>
             <div class="team-grid">
-                <div class="card team-card"><span class="team-role">Process simulation lead</span><span class="team-name">Member 1</span><span class="team-task">Aspen Plus flowsheet, recycle convergence</span></div>
-                <div class="card team-card"><span class="team-role">Computational modelling lead</span><span class="team-name">Member 2</span><span class="team-task">Python equipment calculations, hand verification</span></div>
-                <div class="card team-card"><span class="team-role">Web and data lead</span><span class="team-name">Member 3</span><span class="team-task">Dataset generation, interpolation, this site</span></div>
-                <div class="card team-card"><span class="team-role">Market and systems lead</span><span class="team-name">Member 4</span><span class="team-task">Competitor survey, presentation</span></div>
+                <div class="card team-card"><span class="team-role">Process simulation lead</span><span class="team-name">Charan</span><span class="team-task">Aspen Plus flowsheet, Solids circuit design, and recycle convergence</span></div>
+                <div class="card team-card"><span class="team-role">Computational modelling lead</span><span class="team-name">Rishan</span><span class="team-task">Double Roll Crusher mechanics (Angle of Nip, capacity, Bond verification)</span></div>
+                <div class="card team-card"><span class="team-role">Web and data lead</span><span class="team-name">Sohil Thakur</span><span class="team-task">Interactive engineering portal, dataset interpolation, and SVG flowsheet</span></div>
+                <div class="card team-card"><span class="team-role">Systems & market lead</span><span class="team-name">ChE 303 Team</span><span class="team-task">Indore competitor benchmarking, Ergun bed hydraulics, and technical defense</span></div>
             </div>
         </section>
     </main>

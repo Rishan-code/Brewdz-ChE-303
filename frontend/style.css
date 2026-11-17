@@ -210,6 +210,8 @@ input[type="range"] { width: 100%; accent-color: var(--crema-deep); height: 28px
 .pill-direct { background: #F6E3D6; color: #9A4310; }
 .pill-roaster { background: #F3ECE2; color: var(--crema-deep); }
 .pill-alt { background: #ECEAE6; color: #5E554D; }
+.pill-pass { background: #E6F4EA; color: #137333; }
+.pill-fail { background: #FCE8E6; color: #C5221F; }
 
 /* Team */
 .team-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }

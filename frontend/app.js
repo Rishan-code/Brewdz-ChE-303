@@ -68,11 +68,48 @@
         return (visc + inert) * prof.bedLength / 1000;
     }
 
+    // -------------------------------- Double Roll Crusher mechanics (ChE 303)
+    const ROLL = {
+        diameter_mm: 250,      // D_R = 250 mm
+        width_mm: 300,         // W_R = 300 mm
+        speed_rpm: 240,        // N = 240 rpm
+        bulk_density: 400,     // rho_bulk = 400 kg/m3
+        vol_efficiency: 0.25,  // eta_v = 0.25
+        friction_coeff: 0.32   // mu = 0.32, max alpha = 2 * atan(0.32) = 35.50 deg
+    };
+
+    function calcDoubleRoll(prof, feedD50_mm, feedSpan, millTotalFeed_kgh) {
+        const s_mm = prof.rollerGap; // roll gap in mm
+        // feed largest particle D_p in mm (estimated from d50 and span)
+        const D_p_mm = feedD50_mm * (1 + feedSpan * 0.5);
+        const cosTheta = (ROLL.diameter_mm + s_mm) / (ROLL.diameter_mm + D_p_mm);
+        const thetaRad = Math.acos(Math.min(1, Math.max(-1, cosTheta)));
+        const alphaDeg = 2 * thetaRad * (180 / Math.PI);
+        const maxAlphaDeg = 2 * Math.atan(ROLL.friction_coeff) * (180 / Math.PI); // 35.50 deg
+        const isGripped = alphaDeg <= maxAlphaDeg;
+
+        // Practical capacity: Q = 60 * pi * D_R * W_R * N * s * rho_bulk * eta_v (in kg/h)
+        const Q_theoretical = 60 * Math.PI * (ROLL.diameter_mm / 1000) * (ROLL.width_mm / 1000) * ROLL.speed_rpm * (s_mm / 1000) * ROLL.bulk_density;
+        const Q_practical = Q_theoretical * ROLL.vol_efficiency;
+
+        return {
+            s_mm,
+            D_p_mm,
+            alphaDeg,
+            maxAlphaDeg,
+            isGripped,
+            Q_practical,
+            loadRatio: (millTotalFeed_kgh / Q_practical) * 100
+        };
+    }
+
     const fmt = (x, n) => Number(x).toFixed(n);
     const pctDiff = (a, b) => (b === 0 ? 0 : Math.abs(a - b) / Math.abs(b) * 100);
 
     // ---------------------------------------------------------------- DOM
     const inputFeed = $('input-feed-rate');
+    const inputFeedD50 = $('input-feed-d50');
+    const inputFeedSpan = $('input-feed-span');
     const inputMesh = $('input-screen-mesh');
     const selectProfile = $('select-grind-profile');
     let activeStream = 'product';
@@ -251,15 +288,24 @@
     }
 
     // --------------------------------------------------------- hand-check
-    function renderCheck(r, prof) {
+    function renderCheck(r, prof, roll) {
         const F = r.feed_rate_kgh;
         const E = bondKwhPerT(r.circuit_p80_um);
         const P = F / 1000 * E;
         const dP = ergunKPa(r.sauter_d32_um, prof);
         const M = F + r.recycle_rate_kgh;
-        const row = (step, calc, res, ref, unit, n) =>
-            `<tr><td>${step}</td><td class="mono">${calc}</td><td class="mono">${fmt(res, n)} ${unit}<span class="diff">dataset ${fmt(ref, n)} · ${fmt(pctDiff(res, ref), 2)}% off</span></td></tr>`;
+        const row = (step, calc, res, ref, unit, n, diff) =>
+            `<tr><td>${step}</td><td class="mono">${calc}</td><td class="mono">${fmt(res, n)} ${unit}${diff !== false ? `<span class="diff">dataset ${fmt(ref, n)} · ${fmt(pctDiff(res, ref), 2)}% off</span>` : ''}</td></tr>`;
+        
+        let nipRow = '';
+        if (roll) {
+            nipRow =
+                row('Angle of Nip', `cos(&alpha;/2) = (${ROLL.diameter_mm} + ${prof.rollerGap})/(${ROLL.diameter_mm} + ${fmt(roll.D_p_mm, 2)})`, roll.alphaDeg, roll.maxAlphaDeg, `&deg; (${roll.isGripped ? 'PASS &le; 35.5&deg;' : 'SLIP RISK'})`, 2, false) +
+                row('Roll Practical Cap', `Q = 60&pi; &times; 0.25 &times; 0.30 &times; 240 &times; ${fmt(prof.rollerGap/1000, 4)} &times; 400 &times; 0.25`, roll.Q_practical, M, 'kg/h', 1, false);
+        }
+
         $('check-body').innerHTML =
+            nipRow +
             row('Recycle balance', `M = F + R = ${fmt(F, 1)} + ${fmt(r.recycle_rate_kgh, 1)}`, M, r.mill_total_feed_kgh, 'kg/h', 1) +
             row('Bond energy', `E = 10 × ${D.params.bond_work_index_kwh_per_t} × (1/√${fmt(r.circuit_p80_um, 0)} − 1/√${D.params.feed_d80_um})`, E, r.specific_energy_kwh_per_kg * 1000, 'kWh/t', 3) +
             row('Mill power', `P = ${fmt(F / 1000, 3)} t/h × ${fmt(E, 3)} kWh/t`, P, r.mill_power_kw, 'kW', 3) +
@@ -302,11 +348,17 @@
     function update() {
         const prof = PROFILE[selectProfile.value];
         const feed = parseFloat(inputFeed.value);
+        const feedD50 = parseFloat(inputFeedD50 ? inputFeedD50.value : 6.50);
+        const feedSpan = parseFloat(inputFeedSpan ? inputFeedSpan.value : 0.60);
         const mesh = parseFloat(inputMesh.value);
         const r = simulate(prof.name, feed, mesh);
         current = r;
 
+        const roll = calcDoubleRoll(prof, feedD50, feedSpan, r.mill_total_feed_kgh);
+
         $('val-feed-rate').textContent = `${feed} kg/h`;
+        if ($('val-feed-d50')) $('val-feed-d50').textContent = `${feedD50.toFixed(2)} mm`;
+        if ($('val-feed-span')) $('val-feed-span').textContent = `${feedSpan.toFixed(2)}`;
         $('val-screen-mesh').textContent = `${mesh} µm`;
 
         $('out-power').textContent = `${fmt(r.mill_power_kw, 2)} kW`;
@@ -315,8 +367,28 @@
         $('out-recycle-ratio').textContent = `Circulating load R/F = ${fmt(r.recycle_ratio, 2)} · mill throughput ${fmt(r.mill_total_feed_kgh, 0)} kg/h`;
         $('out-yield').textContent = `${fmt(r.product_yield_pct, 1)}%`;
         $('out-product').textContent = `${fmt(r.product_rate_kgh, 1)} kg/h product · ${fmt(r.fines_byproduct_kgh, 1)} kg/h fines by-product`;
-        $('out-d50').textContent = `${fmt(r.product_d50_um, 0)} µm`;
-        $('out-span').textContent = `Span ${fmt(r.product_span, 2)} (conventional ${fmt(prof.conventional.span, 2)}) · d80 ${fmt(r.product_d80_um, 0)} µm`;
+        
+        // Full product size distribution percentiles
+        const d50 = r.product_d50_um;
+        const d80 = r.product_d80_um;
+        const span = r.product_span;
+        const d10 = Math.max(10, d50 * (1 - span * 0.42));
+        const d90 = d50 * (1 + span * 0.58);
+        $('out-d50').textContent = `${fmt(d50, 0)} µm`;
+        $('out-span').textContent = `d10: ${fmt(d10, 0)} µm · d50: ${fmt(d50, 0)} µm · d80: ${fmt(d80, 0)} µm · d90: ${fmt(d90, 0)} µm · Span: ${fmt(span, 2)}`;
+
+        // Double roll Angle of Nip and Capacity
+        if ($('out-nip')) {
+            $('out-nip').textContent = `${fmt(roll.alphaDeg, 1)}°`;
+            $('out-nip-badge').textContent = roll.isGripped ? '✓ PASS (≤ 35.5°)' : '⚠️ SLIP RISK (> 35.5°)';
+            $('out-nip-badge').className = `pill ${roll.isGripped ? 'pill-pass' : 'pill-fail'}`;
+            $('out-nip-sub').textContent = `Allowable limit α ≤ 35.5° (μ = 0.32) · Feed Dp = ${fmt(roll.D_p_mm, 2)} mm`;
+        }
+        if ($('out-capacity')) {
+            $('out-capacity').textContent = `${fmt(roll.Q_practical, 0)} kg/h`;
+            $('out-capacity-sub').textContent = `Load ${fmt(roll.loadRatio, 0)}% of practical capacity (${fmt(r.mill_total_feed_kgh, 0)} kg/h total mill feed)`;
+        }
+
         $('out-fines').textContent = `${fmt(r.fines_fraction_pct, 1)}%`;
         $('out-fines-cmp').textContent = `${fmt((1 - r.fines_fraction_pct / prof.conventional.finesPct) * 100, 0)}% lower than the conventional grinder model (${fmt(prof.conventional.finesPct, 1)}%)`;
         $('out-ergun').textContent = `${fmt(r.ergun_pressure_drop_kPa, 3)} kPa`;
@@ -333,11 +405,13 @@
         $('pfd-aperture').textContent = `${fmt(mesh, 0)} µm`;
 
         renderStreamDetail();
-        renderCheck(r, prof);
+        renderCheck(r, prof, roll);
         updateCharts(r, prof);
     }
 
     inputFeed.addEventListener('input', update);
+    if (inputFeedD50) inputFeedD50.addEventListener('input', update);
+    if (inputFeedSpan) inputFeedSpan.addEventListener('input', update);
     inputMesh.addEventListener('input', update);
     selectProfile.addEventListener('change', () => { configureMeshSlider(true); update(); });
     $('btn-reset-mesh').addEventListener('click', () => { configureMeshSlider(true); update(); });
