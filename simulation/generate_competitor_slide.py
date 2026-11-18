@@ -64,7 +64,7 @@ def generate_competitor_slide():
     table_w = sum(col_ws)
 
     table_top = 0.858
-    table_bot = 0.145
+    table_bot = 0.156
     ax.add_patch(FancyBboxPatch((x0, table_bot), table_w, table_top - table_bot,
                                 boxstyle="round,pad=0.002,rounding_size=0.012",
                                 facecolor=C_CARD, edgecolor=C_BORDER, lw=1.6, zorder=1))
@@ -178,24 +178,27 @@ def generate_competitor_slide():
         ax.text(col_xs[4] + 0.011, ry + row_h / 2, r["diff"],
                 ha="left", va="center", fontsize=8.4, fontweight="bold", color=C_GREEN, linespacing=1.35, zorder=3)
 
-    # --- BOTTOM BREWDZ SUMMARY STRIP (4 PILLARS) ---
+    # --- BOTTOM BREWDZ PROFITABILITY ADVANTAGE STRIP (4 PROFIT DRIVERS) ---
+    ax.text(x0, 0.132, "WHY BREWDZ IS MORE PROFITABLE THAN COMPETITORS:",
+            ha="left", va="center", fontsize=8.6, fontweight="bold", color=C_ESPRESSO, zorder=4)
+
     pillars = [
-        ("Closed-Loop Recycle", "0% boulders & +23.8% yield", C_GREEN_BG, C_GREEN),
-        ("Chilled Roll Milling (<28°C)", "Preserves delicate aroma oils", C_BLUE_BG, C_BLUE),
-        ("SME & Indore Ready", "50–500 kg/h · ~40% lower CapEx", C_TAN, C_ROAST),
-        ("Zero-Waste Valorization", "PROD -> Ground | FINE -> Instant", C_GOLD_BG, C_GOLD),
+        ("+23.8% Revenue / Batch", "Recycle recovers +8 kg/h extra\nsalable coffee at zero bean cost", C_GREEN_BG, C_GREEN),
+        ("100% Bean Monetization", "Zero waste: sell PROD (Ground)\n+ sell FINE (Instant feedstock)", C_GOLD_BG, C_GOLD),
+        ("~40% Lower CapEx & Fast ROI", "₹5–7L local skid vs ₹10–15L\nimported · <3 month payback", C_TAN, C_ROAST),
+        ("Ultra-Low OpEx & B2B Scale", "~1.1 kW power (<₹10/hr) · No\ncostly retail café rent overhead", C_BLUE_BG, C_BLUE),
     ]
     pw = 0.228
     gap = (table_w - 4 * pw) / 3
     for i, (pt, ps, pfc, pec) in enumerate(pillars):
         px = x0 + i * (pw + gap)
-        ax.add_patch(FancyBboxPatch((px, 0.028), pw, 0.092,
+        ax.add_patch(FancyBboxPatch((px, 0.018), pw, 0.098,
                                     boxstyle="round,pad=0.003,rounding_size=0.010",
-                                    facecolor=pfc, edgecolor=pec, lw=1.4, zorder=3))
+                                    facecolor=pfc, edgecolor=pec, lw=1.5, zorder=3))
         ax.text(px + pw / 2, 0.092, pt, ha="center", va="center",
-                fontsize=9.3, fontweight="bold", color=pec, zorder=4)
-        ax.text(px + pw / 2, 0.052, ps, ha="center", va="center",
-                fontsize=8.2, color=C_ESPRESSO, zorder=4)
+                fontsize=9.1, fontweight="bold", color=pec, zorder=4)
+        ax.text(px + pw / 2, 0.048, ps, ha="center", va="center",
+                fontsize=7.8, color=C_ESPRESSO, linespacing=1.28, zorder=4)
 
     for ext in ["png", "svg"]:
         out_path = os.path.join(OUT_DIR, f"slide_competitor_study.{ext}")
