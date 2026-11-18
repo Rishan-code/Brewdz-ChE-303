@@ -94,7 +94,7 @@
                     <p>Burr and disc grinders break beans in a single pass and ship whatever comes out, which gives a broad, bimodal distribution:</p>
                     <ul class="styled-list">
                         <li><strong>Boulders.</strong> Low surface area and long diffusion paths; water bypasses them, so they under-extract and taste sour.</li>
-                        <li><strong>Fines (&lt; 100 µm).</strong> They dominate the bed's surface area, raise pressure drop (Ergun equation), migrate into filter pores and over-extract into bitterness.</li>
+                        <li><strong>Fines (&lt; 100 µm).</strong> They dominate the bed's surface area, raise hydraulic resistance, migrate into filter pores and over-extract into bitterness.</li>
                         <li><strong>Heat.</strong> High-speed friction warms the grounds and drives off volatile aroma compounds.</li>
                         <li><strong>No correction.</strong> Without classification, off-size material goes straight into the product.</li>
                     </ul>
@@ -403,25 +403,11 @@
                             <span class="res-sub" id="out-capacity-sub">Roll speed 240 rpm &middot; Width 300 mm &middot; &eta;<sub>v</sub> = 25%</span>
                         </div>
 
-                        <!-- 6. Roll Crusher: Power (Bond's Law) -->
-                        <div class="result-box">
-                            <span class="res-label">Roll Crusher: Power (Bond's Law)</span>
-                            <div class="res-num" id="out-power">&ndash;</div>
-                            <span class="res-sub" id="out-spec-energy"></span>
-                        </div>
-
-                        <!-- 7. Fine Dust Mass (FINE Stream) -->
+                        <!-- 6. Fine Dust Mass (FINE Stream) -->
                         <div class="result-box">
                             <span class="res-label">Fine Dust Mass (FINE Stream)</span>
                             <div class="res-num" id="out-fines-mass">&ndash;</div>
                             <span class="res-sub" id="out-fines-sub"></span>
-                        </div>
-
-                        <!-- 8. Brew-Bed Pressure Drop (Ergun) -->
-                        <div class="result-box">
-                            <span class="res-label">Brew-Bed Pressure Drop (Ergun)</span>
-                            <div class="res-num" id="out-ergun">&ndash;</div>
-                            <span class="res-sub" id="out-ergun-cmp"></span>
                         </div>
                     </div>
                 </div>
@@ -431,37 +417,19 @@
         <!-- Charts -->
         <section class="container section" id="plots">
             <div class="section-header">
-                <h2>Process Performance &amp; PSD Curves</h2>
+                <h2>Feed vs. Product Size Distribution</h2>
                 <p>Visualizing comminution and classification: <strong>Input Feed Size Distribution</strong> &rarr; <strong>Output Product Size Distribution</strong>.</p>
             </div>
             <p class="chart-fallback" id="chart-fallback" hidden>Charts need an internet connection to load Chart.js. The calculator above still works offline.</p>
 
             <div class="chart-grid">
-                <div class="card chart-card">
-                    <div class="chart-header">
-                        <h3>Mill power vs. feed rate</h3>
-                        <span class="chart-tag">Bond's law</span>
-                    </div>
-                    <div class="chart-container"><canvas id="chartPowerFeed" role="img" aria-label="Line chart of mill power against feed rate for the three grind profiles"></canvas></div>
-                    <p class="chart-note">Lines at each profile's design aperture. The marker is your operating point.</p>
-                </div>
-
-                <div class="card chart-card">
+                <div class="card chart-card wide">
                     <div class="chart-header">
                         <h3>Particle Size Distribution: Feed vs. Product</h3>
                         <span class="chart-tag">Input PSD &rarr; Output PSD</span>
                     </div>
                     <div class="chart-container"><canvas id="chartPSD" role="img" aria-label="Particle size distribution: Input feed size distribution vs output product size distribution"></canvas></div>
-                    <p class="chart-note">Gold curve: Input Feed Size Distribution (whole beans, mm scale). Green curve: Output Product Size Distribution (calibrated powder, µm scale).</p>
-                </div>
-
-                <div class="card chart-card wide">
-                    <div class="chart-header">
-                        <h3>Bed pressure drop vs. fines content</h3>
-                        <span class="chart-tag">Ergun equation, Sauter diameter</span>
-                    </div>
-                    <div class="chart-container"><canvas id="chartFines" role="img" aria-label="Brew-bed pressure drop rising with fines fraction"></canvas></div>
-                    <p class="chart-note">Curve: screened product blended with increasing amounts of the fines mode. Fines dominate the surface area, so pressure drop climbs steeply.</p>
+                    <p class="chart-note">Gold curve: Input Feed Size Distribution (whole beans, mm scale). Green curve: Output Product Size Distribution (calibrated powder, µm scale). Vertical dashed line: Vibrating screen cut aperture.</p>
                 </div>
             </div>
         </section>
@@ -469,17 +437,15 @@
         <!-- Method -->
         <section class="container section" id="method">
             <div class="section-header">
-                <h2>Method and verification</h2>
-                <p>The governing equations, a live hand-check at your operating point, and what the model does not cover.</p>
+                <h2>Roll Crusher Mechanics &amp; Verification</h2>
+                <p>The governing double-roll crusher &amp; closed-loop classification equations, plus a live check at your operating point.</p>
             </div>
 
             <div class="grid-2">
                 <article class="card">
                     <h3>Governing equations</h3>
                     <dl class="eq-list">
-                        <dt>Mill product (per pass)</dt>
-                        <dd class="eq">Q(d) = &phi;<sub>f</sub> &middot; LN(d; 40 µm, &sigma;<sub>g</sub> 1.8) + (1 &minus; &phi;<sub>f</sub>) &middot; [1 &minus; exp(&minus;(d / d<sub>63</sub>)<sup>n</sup>)]</dd>
-                        <dt>Double roll angle of nip & gripping check</dt>
+                        <dt>Double roll angle of nip &amp; gripping check</dt>
                         <dd class="eq">cos(&alpha;/2) = (D<sub>R</sub> + s) / (D<sub>R</sub> + D<sub>p</sub>), &nbsp; &mu; &ge; tan(&alpha;/2) &rArr; &alpha; &le; 35.5&deg;</dd>
                         <dt>Double roll practical capacity</dt>
                         <dd class="eq">Q<sub>practical</sub> = 60 &pi; D<sub>R</sub> W<sub>R</sub> N s &rho;<sub>bulk</sub> &eta;<sub>v</sub></dd>
@@ -487,29 +453,25 @@
                         <dd class="eq">M = F + R, &nbsp; R = r &middot; M &nbsp;&rArr;&nbsp; M = F / (1 &minus; r)</dd>
                         <dt>Screen effectiveness</dt>
                         <dd class="eq">E = E<sub>O</sub> &middot; E<sub>U</sub> = (O x<sub>O</sub> / F x<sub>F</sub>) &middot; (U (1 &minus; x<sub>U</sub>) / F (1 &minus; x<sub>F</sub>))</dd>
-                        <dt>Bond's law (closed circuit, fresh feed basis)</dt>
-                        <dd class="eq">P = ṁ<sub>F</sub> &middot; 10 W<sub>i</sub> (1/&radic;P<sub>80</sub> &minus; 1/&radic;F<sub>80</sub>)</dd>
-                        <dt>Ergun equation (brew bed)</dt>
-                        <dd class="eq">&Delta;P / L = 150 &mu;u (1 &minus; &epsilon;)<sup>2</sup> / (&epsilon;<sup>3</sup> d<sub>32</sub><sup>2</sup>) + 1.75 &rho;u<sup>2</sup> (1 &minus; &epsilon;) / (&epsilon;<sup>3</sup> d<sub>32</sub>)</dd>
                     </dl>
                 </article>
 
                 <article class="card">
                     <h3>Hand-check at your operating point</h3>
-                    <p class="muted">Recomputed directly from the equations, then compared with the interpolated dataset value.</p>
+                    <p class="muted">Recomputed directly from the double-roll &amp; recycle equations, then verified against the Aspen-aligned dataset.</p>
                     <div class="table-responsive">
                         <table class="check-table">
                             <thead><tr><th>Step</th><th>Calculation</th><th>Result</th></tr></thead>
                             <tbody id="check-body"></tbody>
                         </table>
                     </div>
-                    <p class="muted small">Off-grid points differ slightly because the site interpolates linearly between simulated cases. <code>coffee_particle_calc.py</code> holds the fixed benchmark (1.1749 kW; screen E = 84.14%).</p>
+                    <p class="muted small">Off-grid points differ slightly because the site interpolates linearly between simulated cases. <code>coffee_particle_calc.py</code> holds the fixed Python hand-check benchmark (Angle of Nip, Practical Capacity, and Screen E = 84.14%).</p>
                 </article>
             </div>
 
             <div class="grid-2 method-lower">
                 <article class="card">
-                    <h3>Model parameters</h3>
+                    <h3>Double Roll Crusher &amp; Circuit Parameters</h3>
                     <div class="table-responsive">
                         <table class="check-table" id="param-table">
                             <tbody id="param-body"></tbody>
@@ -517,14 +479,13 @@
                     </div>
                 </article>
                 <article class="card">
-                    <h3>Simulation & Modeling Notes</h3>
+                    <h3>Simulation &amp; Modeling Notes</h3>
                     <ul class="styled-list">
                         <li><strong>Aspen Plus V14 Flowsheet Benchmark.</strong> The circuit mass balance and particle classification are validated against the Aspen Plus V14 solids simulation (<code>Coffee_powder.apwz</code>, 12 runs: <code>mix_1..6</code> vs. <code>run_1..6</code>). Closing the oversize recycle loop delivers a +23.8% surge in product yield (42.8% vs. 34.6%).</li>
-                        <li><strong>Material assumptions.</strong> Bond work index <em>W</em><sub>i</sub> = 12.5 kWh/t and moisture fraction (3%) reflect typical roasted coffee bean physical characteristics.</li>
-                        <li><strong>Recycle breakage.</strong> Recycled oversize is modeled as re-breaking to the calibrated product PSD shape without accumulation.</li>
+                        <li><strong>Feed Moisture &amp; Solid Properties.</strong> Raw beans enter with 3% moisture (flashed in the roaster at 210 °C) and bulk density &rho;<sub>bulk</sub> = 400 kg/m&sup3; (true solid density 1,165 kg/m&sup3;).</li>
+                        <li><strong>Recycle breakage.</strong> Recycled oversize (1,093–2,087 µm) returns to the mixer and re-breaks cleanly through the double-roll crusher without accumulation.</li>
                         <li><strong>Conventional baseline.</strong> The open-loop grinder baseline is modeled as a broad bimodal PSD representative of commercial batch disc/burr grinders.</li>
-                        <li><strong>Pressure drop is relative.</strong> Ergun equation evaluates clean-bed hydraulic permeability. Real puck tamping and swelling are not dynamically simulated.</li>
-                        <li><strong>Chilled grinding.</strong> The &lt; 28 °C roll jacket temperature is maintained to preserve delicate coffee aromatics.</li>
+                        <li><strong>Chilled grinding.</strong> Water-jacketed rolls keep grinding temperatures &lt; 28 °C to preserve delicate volatile coffee aromatics.</li>
                     </ul>
                 </article>
             </div>
@@ -617,7 +578,7 @@
                     </div>
                 </div>
 
-                <p class="muted small table-foot">Competitor data compiled from official brand websites and market benchmarking. BrewDz operational yield and power figures are Aspen Plus V14 &amp; Python verified results.</p>
+                <p class="muted small table-foot">Competitor data compiled from official brand websites and market benchmarking. BrewDz operational yield and mass balance figures are Aspen Plus V14 &amp; Python verified results.</p>
             </div>
         </section>
 
@@ -629,7 +590,7 @@
             </div>
             <div class="team-grid">
                 <div class="card team-card"><span class="team-role">Project Module 01</span><span class="team-name">Process Simulation</span><span class="team-task">Aspen Plus V14 flowsheet, solids circuit modeling, and recycle convergence</span></div>
-                <div class="card team-card"><span class="team-role">Project Module 02</span><span class="team-name">Particle Mechanics</span><span class="team-task">Double Roll Crusher mechanics, Angle of Nip gripping check, and Bond verification</span></div>
+                <div class="card team-card"><span class="team-role">Project Module 02</span><span class="team-name">Particle Mechanics</span><span class="team-task">Double Roll Crusher mechanics, Angle of Nip gripping check, and capacity verification</span></div>
                 <div class="card team-card"><span class="team-role">Project Module 03</span><span class="team-name">Interactive Platform</span><span class="team-task">Interactive engineering calculator, dynamic dataset interpolation, and SVG flowsheet</span></div>
                 <div class="card team-card"><span class="team-role">Project Module 04</span><span class="team-name">Market &amp; Systems</span><span class="team-task">Indore competitor benchmarking, packed-bed hydraulics, and technical defense</span></div>
             </div>

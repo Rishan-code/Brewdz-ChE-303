@@ -4,8 +4,8 @@
  *
  * Data source: window.BREWDZ_DATA from simulation_data.js, which is written by
  * generate_simulation_dataset.py together with simulation_dataset.csv (same cases).
- * This script only retrieves and interpolates those cases; it also recomputes
- * Bond's law and the Ergun equation as an independent hand-check.
+ * This script retrieves and interpolates those cases and independently recomputes
+ * Double Roll Crusher mechanics (Angle of Nip & Practical Capacity) and recycle mass balance.
  */
 (function () {
     'use strict';
@@ -54,18 +54,6 @@
             out[k] = lo * (1 - ab.t) + hi * ab.t;
         });
         return out;
-    }
-
-    // ------------------------------------------------- independent formulas
-    function bondKwhPerT(p80) {
-        return 10 * D.params.bond_work_index_kwh_per_t * (1 / Math.sqrt(p80) - 1 / Math.sqrt(D.params.feed_d80_um));
-    }
-    function ergunKPa(d32um, prof) {
-        const dp = d32um * 1e-6, e = prof.bedPorosity, u = prof.velocity;
-        const mu = D.params.water_viscosity_Pas, rho = D.params.water_density_kgm3;
-        const visc = 150 * Math.pow(1 - e, 2) / Math.pow(e, 3) * mu * u / (dp * dp);
-        const inert = 1.75 * (1 - e) / Math.pow(e, 3) * rho * u * u / dp;
-        return (visc + inert) * prof.bedLength / 1000;
     }
 
     // -------------------------------- Double Roll Crusher mechanics (ChE 303)
@@ -281,7 +269,7 @@
     const HAS_CHART = typeof window.Chart !== 'undefined';
     const C = { ink: '#2C1810', muted: '#7A6A5C', grid: 'rgba(44,24,16,0.08)', espresso: '#8C3B1E', drip: '#C8915A', french: '#2F7D5B', conv: '#B4553F', brew: '#2F7D5B' };
     const PROFILE_COLOR = { Espresso: C.espresso, Drip_PourOver: C.drip, FrenchPress_ColdBrew: C.french };
-    let chartPower = null, chartPSD = null, chartFines = null;
+    let chartPSD = null;
 
     function axis(title, extra) {
         return Object.assign({
@@ -319,27 +307,6 @@
         Chart.defaults.color = C.muted;
         const legend = { labels: { color: C.ink, boxWidth: 14, font: { size: 11 } } };
 
-        chartPower = new Chart($('chartPowerFeed'), {
-            type: 'line',
-            data: {
-                datasets: D.profiles.map(p => ({
-                    label: p.label,
-                    data: D.feedRates.map(f => ({ x: f, y: GRID[p.name][p.designAperture][f][COL.mill_power_kw] })),
-                    borderColor: PROFILE_COLOR[p.name], backgroundColor: PROFILE_COLOR[p.name],
-                    borderWidth: 2, pointRadius: 0
-                })).concat([{
-                    label: 'Operating point', data: [], showLine: false,
-                    pointRadius: 7, pointHoverRadius: 8, pointBackgroundColor: '#fff',
-                    pointBorderColor: C.ink, pointBorderWidth: 3, borderColor: C.ink, backgroundColor: '#fff'
-                }])
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, animation: { duration: 200 },
-                plugins: { legend, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(2)} kW at ${c.parsed.x} kg/h` } } },
-                scales: { x: axis('Fresh feed rate (kg/h)', { type: 'linear', min: 50, max: 500 }), y: axis('Mill power (kW)', { beginAtZero: true }) }
-            }
-        });
-
         chartPSD = new Chart($('chartPSD'), {
             type: 'line',
             data: {
@@ -362,52 +329,24 @@
                 }
             }
         });
-
-        chartFines = new Chart($('chartFines'), {
-            type: 'line',
-            data: {
-                datasets: [
-                    { label: 'Pressure drop vs. fines', data: [], borderColor: C.drip, borderWidth: 2.5, pointRadius: 0, tension: 0.2 },
-                    { label: 'BrewDz (your operating point)', data: [], showLine: false, pointRadius: 7, pointBackgroundColor: C.brew, pointBorderColor: '#fff', pointBorderWidth: 2, borderColor: C.brew, backgroundColor: C.brew },
-                    { label: 'Conventional grinder', data: [], showLine: false, pointRadius: 7, pointStyle: 'rectRot', pointBackgroundColor: C.conv, pointBorderColor: '#fff', pointBorderWidth: 2, borderColor: C.conv, backgroundColor: C.conv }
-                ]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false, animation: { duration: 200 },
-                plugins: { legend, tooltip: { callbacks: { label: c => `${c.dataset.label}: ${c.parsed.y.toFixed(3)} kPa at ${c.parsed.x.toFixed(1)}% fines` } } },
-                scales: { x: axis('Fines below 100 µm (% of product mass)', { type: 'linear', min: 0 }), y: axis('Bed pressure drop (kPa)', { beginAtZero: true }) }
-            }
-        });
     }
 
     function updateCharts(r, prof, feedD50, feedSpan) {
-        if (!HAS_CHART) return;
-        chartPower.data.datasets[3].data = [{ x: r.feed_rate_kgh, y: r.mill_power_kw }];
-        chartPower.data.datasets.forEach((ds, i) => { if (i < 3) ds.borderWidth = D.profiles[i].name === prof.name ? 3.5 : 1.5; });
-        chartPower.update();
-
+        if (!HAS_CHART || !chartPSD) return;
         chartPSD.data.datasets[0].data = calcFeedPSDCurve(feedD50, feedSpan);
         chartPSD.data.datasets[1].data = D.chartSizes.map((s, i) => ({ x: s, y: prof.psdConventional[i] }));
         chartPSD.data.datasets[2].data = D.chartSizes.map((s, i) => ({ x: s, y: prof.psdBrewdz[i] }));
         chartPSD.options.plugins.apertureLine.value = r.screen_aperture_um;
         chartPSD.update();
-
-        chartFines.data.datasets[0].data = prof.sweep.map(p => ({ x: p.finesPct, y: p.dP }));
-        chartFines.data.datasets[1].data = [{ x: r.fines_fraction_pct, y: r.ergun_pressure_drop_kPa }];
-        chartFines.data.datasets[2].data = [{ x: prof.conventional.finesPct, y: prof.conventional.dP }];
-        chartFines.update();
     }
 
     // --------------------------------------------------------- hand-check
     function renderCheck(r, prof, roll) {
         const F = r.feed_rate_kgh;
-        const E = bondKwhPerT(r.circuit_p80_um);
-        const P = F / 1000 * E;
-        const dP = ergunKPa(r.sauter_d32_um, prof);
         const M = F + r.recycle_rate_kgh;
         const row = (step, calc, res, ref, unit, n, diff) =>
             `<tr><td>${step}</td><td class="mono">${calc}</td><td class="mono">${fmt(res, n)} ${unit}${diff !== false ? `<span class="diff">dataset ${fmt(ref, n)} · ${fmt(pctDiff(res, ref), 2)}% off</span>` : ''}</td></tr>`;
-        
+
         let nipRow = '';
         if (roll) {
             nipRow =
@@ -418,24 +357,21 @@
         $('check-body').innerHTML =
             nipRow +
             row('Recycle balance', `M = F + R = ${fmt(F, 1)} + ${fmt(r.recycle_rate_kgh, 1)}`, M, r.mill_total_feed_kgh, 'kg/h', 1) +
-            row('Bond energy', `E = 10 × ${D.params.bond_work_index_kwh_per_t} × (1/√${fmt(r.circuit_p80_um, 0)} − 1/√${D.params.feed_d80_um})`, E, r.specific_energy_kwh_per_kg * 1000, 'kWh/t', 3) +
-            row('Mill power', `P = ${fmt(F / 1000, 3)} t/h × ${fmt(E, 3)} kWh/t`, P, r.mill_power_kw, 'kW', 3) +
-            row('Ergun ΔP', `d32 = ${fmt(r.sauter_d32_um, 0)} µm, ε = ${prof.bedPorosity}, u = ${prof.velocity * 1000} mm/s, L = ${prof.bedLength * 1000} mm`, dP, r.ergun_pressure_drop_kPa, 'kPa', 3);
+            row('Screen effectiveness', `E = E_O × E_U = ${D.params.screen_oversize_recovery} × ${D.params.screen_undersize_recovery}`, D.params.screen_oversize_recovery * D.params.screen_undersize_recovery * 100, 84.15, '%', 2, false);
     }
 
     function renderParams() {
         const p = D.params;
         const rows = [
-            ['Bond work index W<sub>i</sub> (assumed)', `${p.bond_work_index_kwh_per_t} kWh/t`],
-            ['Feed size F<sub>80</sub> (whole bean)', `${p.feed_d80_um} µm`],
-            ['Mill size rule', `d<sub>63</sub> = ${p.mill_size_factor} × roll gap`],
-            ['Rosin–Rammler exponent n', `${p.rr_uniformity_n}`],
-            ['Fines mode', `log-normal, median ${p.fines_mode_median_um} µm, σ<sub>g</sub> ${p.fines_mode_sigma_g}`],
-            ['Mill fines share φ<sub>f</sub>', D.profiles.map(q => `${q.label.split(' ')[0]} ${fmt(q.millFinesFrac * 100, 0)}%`).join(' · ')],
+            ['Roll diameter D<sub>R</sub>', `${ROLL.diameter_mm} mm`],
+            ['Roll face width W<sub>R</sub>', `${ROLL.width_mm} mm`],
+            ['Roll speed N', `${ROLL.speed_rpm} rpm`],
+            ['Static friction coefficient &mu;', `${ROLL.friction_coeff} (max nip angle &alpha; &le; 35.5&deg;)`],
+            ['Roasted coffee bulk density &rho;<sub>bulk</sub>', `${ROLL.bulk_density} kg/m&sup3;`],
+            ['Volumetric packing factor &eta;<sub>v</sub>', `${ROLL.vol_efficiency}`],
+            ['Feed moisture (flashed in Roaster)', `3.0 wt% (25 &deg;C &rarr; 210 &deg;C at 1.013 bar)`],
             ['Screen recoveries', `E<sub>O</sub> = ${p.screen_oversize_recovery}, E<sub>U</sub> = ${p.screen_undersize_recovery}`],
-            ['Cyclone grade efficiency', `T(d) = 1 / (1 + (d/${p.cyclone_cut_um} µm)<sup>${p.cyclone_sharpness_k}</sup>)`],
-            ['Brew water (92 °C)', `ρ = ${p.water_density_kgm3} kg/m³, μ = ${p.water_viscosity_Pas} Pa·s`],
-            ['Conventional grinder baseline', `${fmt(p.conventional_fines_frac * 100, 0)}% fines mode, n = ${p.conventional_rr_n}, same nominal d50`]
+            ['Aspen Plus V14 stream class', `MIXNCPSD (30-bin PSD mesh, 100–15,000 &mu;m)`]
         ];
         $('param-body').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td class="mono">${r[1]}</td></tr>`).join('');
     }
@@ -472,10 +408,6 @@
         if ($('val-feed-span')) $('val-feed-span').textContent = `${feedSpan.toFixed(2)}`;
         $('val-screen-mesh').textContent = `${mesh} µm`;
 
-        // Comminution power (Bond's law)
-        if ($('out-power')) $('out-power').textContent = `${fmt(r.mill_power_kw, 2)} kW`;
-        if ($('out-spec-energy')) $('out-spec-energy').textContent = `Specific energy ${fmt(r.specific_energy_kwh_per_kg * 1000, 2)} kWh/t · fresh feed basis`;
-
         // Product mass rate & yield
         if ($('out-product-mass')) $('out-product-mass').textContent = `${fmt(r.product_rate_kgh, 1)} kg/h`;
         if ($('out-product-yield')) $('out-product-yield').textContent = `On-spec yield: ${fmt(r.product_yield_pct, 1)}% · 0.00% boulders`;
@@ -509,13 +441,11 @@
             $('out-capacity-sub').textContent = `Load ${fmt(roll.loadRatio, 0)}% of practical capacity (${fmt(r.mill_total_feed_kgh, 0)} kg/h total crusher feed)`;
         }
 
-        // Fines mass & Ergun bed ΔP
+        // Fines mass (FINE stream)
         if ($('out-fines-mass')) $('out-fines-mass').textContent = `${fmt(r.fines_byproduct_kgh, 1)} kg/h`;
         if ($('out-fines-sub')) $('out-fines-sub').textContent = `Super-fines (< 597 µm) for instant coffee soluble extraction`;
         if ($('out-fines')) $('out-fines').textContent = `${fmt(r.fines_fraction_pct, 1)}%`;
         if ($('out-fines-cmp')) $('out-fines-cmp').textContent = `${fmt((1 - r.fines_fraction_pct / prof.conventional.finesPct) * 100, 0)}% lower than conventional grinder (${fmt(prof.conventional.finesPct, 1)}%)`;
-        if ($('out-ergun')) $('out-ergun').textContent = `${fmt(r.ergun_pressure_drop_kPa, 3)} kPa`;
-        if ($('out-ergun-cmp')) $('out-ergun-cmp').textContent = `Sauter d32 = ${fmt(r.sauter_d32_um, 0)} µm · conventional bed ${fmt(prof.conventional.dP, 3)} kPa (clean bed)`;
 
         // Aspen flowsheet streams
         const roasted = feed * 0.97;
