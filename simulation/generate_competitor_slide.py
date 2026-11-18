@@ -1,7 +1,7 @@
 """
 BrewDz Particle Engineering Pvt. Ltd. — ChE 303 Competitor Study Slide Generator
 Generates a crisp, executive 16:9 (300 DPI) Competitor Comparison Table slide (PNG + SVG)
-matching the exact BrewDz presentation visual language.
+featuring 5 direct coffee competitors across Indore (MP) and Pan-India.
 """
 
 import os
@@ -48,15 +48,14 @@ def generate_competitor_slide():
     ax.add_patch(Rectangle((0, 0.892), 1, 0.108, facecolor=C_ESPRESSO, edgecolor="none", zorder=1))
     ax.add_patch(Rectangle((0, 0.884), 1, 0.008, facecolor=C_CREMA, edgecolor="none", zorder=2))
 
-    ax.text(0.025, 0.956, "Competitor Landscape & BrewDz Differentiation",
+    ax.text(0.025, 0.956, "Competitor Study & BrewDz Market Differentiation",
             ha="left", va="center", fontsize=17.0, fontweight="bold", color="#FFFFFF", zorder=3)
-    ax.text(0.025, 0.916, "Benchmarking 5 Direct & Alternative Players Across Indore (MP) and Pan-India",
+    ax.text(0.025, 0.916, "Benchmarking 5 Direct Coffee Competitors Across Indore (MP) and Pan-India",
             ha="left", va="center", fontsize=10.5, color=C_CREMA, zorder=3)
     ax.text(0.975, 0.946, "BrewDz Particle Engineering · ChE 303",
             ha="right", va="center", fontsize=10.2, fontweight="bold", color="#E8D8C8", zorder=3)
 
     # --- TABLE GEOMETRY ---
-    # 5 Columns: Company & Source | Category | Offering / Tech | Key Gap / Limitation | BrewDz Differentiation
     x0 = 0.022
     col_ws = [0.195, 0.125, 0.195, 0.218, 0.223]  # sums to 0.956
     col_xs = [x0]
@@ -64,7 +63,6 @@ def generate_competitor_slide():
         col_xs.append(col_xs[-1] + w)
     table_w = sum(col_ws)
 
-    # Outer table card border
     table_top = 0.858
     table_bot = 0.145
     ax.add_patch(FancyBboxPatch((x0, table_bot), table_w, table_top - table_bot,
@@ -75,8 +73,8 @@ def generate_competitor_slide():
     hdr_h = 0.062
     hdr_y = table_top - hdr_h
     headers = [
-        "Company & Location",
-        "Category",
+        "Competitor & Location",
+        "Market Focus",
         "Current Offering / Tech",
         "Key Limitation / Gap",
         "How BrewDz Differentiates"
@@ -87,57 +85,57 @@ def generate_competitor_slide():
         ax.text(cx + cw / 2, hdr_y + hdr_h / 2, label, ha="center", va="center",
                 fontsize=9.8, fontweight="bold", color="#FFFFFF", zorder=4)
 
-    # --- 5 COMPETITOR ROWS ---
+    # --- 5 DIRECT COFFEE COMPETITORS ---
     rows = [
         {
             "name": "Kaapi Machines India",
             "loc": "Bengaluru · Pan-India",
             "url": "kaapimachines.com",
-            "cat": "Direct\nCompetitor",
+            "cat": "Commercial\nGrinders",
             "cat_fg": C_RUST, "cat_bg": C_RUST_BG,
-            "offer": "Imported Mahlkönig & Ditting\ncommercial flat-burr grinders\n(batch / single-pass)",
-            "gap": "• Open-loop (no recycle)\n• Very high cost (₹3L–₹15L/unit)\n• Low continuous output",
-            "diff": "Indigenous closed-loop system\nat ~40% lower CapEx with\ncontinuous 50–500 kg/h flow"
+            "offer": "Imported Mahlkönig & Ditting\ncommercial flat-burr coffee\ngrinders (single-pass batch)",
+            "gap": "• Open-loop (no recycle loop)\n• High import cost (₹3L–₹15L)\n• Low continuous throughput",
+            "diff": "Indigenous closed-loop roller\nmill + screen at ~40% lower\nCapEx (50–500 kg/h continuous)"
         },
         {
             "name": "Siolim Specialty Coffee",
             "loc": "Indore, Madhya Pradesh",
             "url": "siolim.coffee",
-            "cat": "Local Indirect /\nCustomer",
+            "cat": "Local Indore\nRoastery",
             "cat_fg": C_GOLD, "cat_bg": C_GOLD_BG,
-            "offer": "Indore specialty roastery &\npre-ground coffee pouches\n(retail commercial burrs)",
+            "offer": "Indore specialty roastery &\npre-ground coffee pouches\n(standalone retail burrs)",
             "gap": "• 14–18% fines clog cold brew\n• Manual hand-sifting wastes\n  15–20% of pricey coffee",
-            "diff": "B2B toll-grinding or compact unit\ndelivering narrow-span grounds\nwith zero manual sifting waste"
-        },
-        {
-            "name": "J P Machine Tools",
-            "loc": "Sanwer Rd, Indore, MP",
-            "url": "indiamart.com",
-            "cat": "Alternative\nSolution",
-            "cat_fg": C_BLUE, "cat_bg": C_BLUE_BG,
-            "offer": "Local industrial hammer mills\n& pin pulverizers for bulk\nfood grains & coffee",
-            "gap": "• Violent impact heats beans\n  >55°C (burns aroma oils)\n• >30% excessive fine dust",
-            "diff": "Low-shear chilled double-roll\ncrushing (<28°C) keeps aroma\n& cuts fine dust by >60%"
+            "diff": "Certified narrow-span grounds\nvia B2B toll-grinding or compact\nunit with zero sifting waste"
         },
         {
             "name": "Blue Tokai Roasters",
             "loc": "Gurugram · Pan-India",
             "url": "bluetokaicoffee.com",
-            "cat": "Direct\n(Packaged)",
+            "cat": "National R&G\nCoffee Brand",
             "cat_fg": C_RUST, "cat_bg": C_RUST_BG,
-            "offer": "National specialty coffee brand\nselling custom-ground retail\npouches (burr mill banks)",
-            "gap": "• Grinding is open-loop only\n• No inline classification;\n  boulders & fines slip into packs",
+            "offer": "India's largest specialty brand\nselling custom-ground retail\npouches (burr mill banks)",
+            "gap": "• Open-loop grinding only\n• No inline classification; both\n  boulders & fines reach cups",
             "diff": "Automated multi-deck screen +\noversize recycle removes 100%\nboulders for uniform extraction"
         },
         {
-            "name": "Galaxy Sivtek Pvt. Ltd.",
-            "loc": "Vadodara, Gujarat",
-            "url": "galaxysivtek.com",
-            "cat": "Alternative\nSolution",
+            "name": "Subko Specialty Coffee",
+            "loc": "Mumbai · Pan-India",
+            "url": "subko.coffee",
+            "cat": "Craft / Micro-Lot\nR&G Coffee",
+            "cat_fg": C_GOLD, "cat_bg": C_GOLD_BG,
+            "offer": "Premium Indian micro-lot &\nartisanal roast-and-ground\nspecialty coffee packs",
+            "gap": "• Small-batch burr grinding\n• Frictional heat (40–50°C)\n  & batch-to-batch grind drift",
+            "diff": "Chilled double-roll crushing\n(<28°C) locks in delicate aroma\nwith repeatable narrow PSD"
+        },
+        {
+            "name": "Tata Coffee Limited",
+            "loc": "Bengaluru · Pan-India",
+            "url": "tatacoffee.com",
+            "cat": "Industrial R&G\n& Instant",
             "cat_fg": C_BLUE, "cat_bg": C_BLUE_BG,
-            "offer": "Sanitary circular vibro-sifters\n& ultrasonic deblinding\nindustrial screens",
-            "gap": "• Standalone screening only\n• No integrated mill/crusher\n  or recycle control loop",
-            "diff": "Turnkey unified skid combining\nchilled roll crushing + screening\n+ automated oversize recycle"
+            "offer": "Large-scale roast & ground\nplus spray-dried & freeze-dried\ninstant coffee manufacturing",
+            "gap": "• Built for massive ton-scale\n  commodity runs, not custom\n  narrow-span specialty batches",
+            "diff": "Modular SME-scale circuit that\nco-produces calibrated Ground\n(PROD) & Instant feed (FINE)"
         },
     ]
 
@@ -160,7 +158,7 @@ def generate_competitor_slide():
         ax.text(col_xs[0] + 0.012, ry + row_h * 0.21, r["url"],
                 ha="left", va="center", fontsize=7.8, color=C_BLUE, style="italic", zorder=3)
 
-        # Col 1: Category Badge
+        # Col 1: Market Focus Badge
         bx = col_xs[1] + col_ws[1] / 2
         by = ry + row_h / 2
         ax.text(bx, by, r["cat"], ha="center", va="center",
@@ -182,10 +180,10 @@ def generate_competitor_slide():
 
     # --- BOTTOM BREWDZ SUMMARY STRIP (4 PILLARS) ---
     pillars = [
-        ("Closed-Loop Recycle", "0% boulders & >96% recovery", C_GREEN_BG, C_GREEN),
+        ("Closed-Loop Recycle", "0% boulders & +23.8% yield", C_GREEN_BG, C_GREEN),
         ("Chilled Roll Milling (<28°C)", "Preserves delicate aroma oils", C_BLUE_BG, C_BLUE),
         ("SME & Indore Ready", "50–500 kg/h · ~40% lower CapEx", C_TAN, C_ROAST),
-        ("Zero-Waste Output", "PROD -> Ground | FINE -> Instant", C_GOLD_BG, C_GOLD),
+        ("Zero-Waste Valorization", "PROD -> Ground | FINE -> Instant", C_GOLD_BG, C_GOLD),
     ]
     pw = 0.228
     gap = (table_w - 4 * pw) / 3
@@ -203,7 +201,7 @@ def generate_competitor_slide():
         out_path = os.path.join(OUT_DIR, f"slide_competitor_study.{ext}")
         fig.savefig(out_path, dpi=300, facecolor=C_BG)
     plt.close(fig)
-    print("Saved slide_competitor_study.png & .svg")
+    print("Saved updated slide_competitor_study.png & .svg")
 
 
 if __name__ == "__main__":
